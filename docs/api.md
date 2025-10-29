@@ -1,4 +1,4 @@
-# BatchInv API Reference
+# BitExact API Reference
 
 ## Overview
 

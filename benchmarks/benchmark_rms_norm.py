@@ -1,6 +1,6 @@
 import torch
 import time
-import batchinv
+import bitexact
 
 def benchmark_kernel(func, x, weight, num_warmup=10, num_iters=100):
     """Benchmark a function with CUDA events for accurate timing"""
@@ -52,7 +52,7 @@ def run_benchmark(batch_size, hidden_dim):
     torch_bw = compute_bandwidth(batch_size, hidden_dim, torch_time)
     
     # Benchmark our implementation
-    our_time = benchmark_kernel(batchinv.rms_norm, x, weight)
+    our_time = benchmark_kernel(bitexact.rms_norm, x, weight)
     our_bw = compute_bandwidth(batch_size, hidden_dim, our_time)
     
     speedup = torch_time / our_time
