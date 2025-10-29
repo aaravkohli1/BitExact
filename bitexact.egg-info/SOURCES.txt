@@ -1,10 +1,10 @@
 pyproject.toml
 setup.py
-batchinv/__init__.py
-batchinv.egg-info/PKG-INFO
-batchinv.egg-info/SOURCES.txt
-batchinv.egg-info/dependency_links.txt
-batchinv.egg-info/top_level.txt
+bitexact/__init__.py
+bitexact.egg-info/PKG-INFO
+bitexact.egg-info/SOURCES.txt
+bitexact.egg-info/dependency_links.txt
+bitexact.egg-info/top_level.txt
 src/bindings.cpp
 src/kernels/rms_norm.cu
 src/kernels/rms_norm.cu

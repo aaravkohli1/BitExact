@@ -3,11 +3,11 @@ from torch.utils.cpp_extension import BuildExtension, CUDAExtension
 import torch
 
 setup(
-    name='batchinv',
+    name='bitexact',
     packages=find_packages(),
     ext_modules=[
         CUDAExtension(
-            name='batchinv._C',
+            name='bitexact._C',
             sources=[
                 'src/bindings.cpp',
                 'src/kernels/rms_norm.cu',
