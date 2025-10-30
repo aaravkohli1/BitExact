@@ -66,7 +66,7 @@ Performs Matrix Multiplication (abbreviated as MatMul) on two tensors in a deter
 
 Mathematically, matrix multiplication is:
 
-![](https://latex.codecogs.com/png.image?\bg_white\dpi{150}\large\mathrm{MatMul}(A,B)=C,\quad C*{ij}=\sum*{k=1}^{n}A*{ik}B*{kj})
+![](https://latex.codecogs.com/png.image?\dpi{150}\color{white}\large\mathrm{MatMul}(A,B)=C,\quad C*{ij}=\sum*{k=1}^{n}A*{ik}B*{kj})
 
 ### Parameters
 
