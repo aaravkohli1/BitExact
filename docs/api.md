@@ -4,7 +4,7 @@
 
 Brief description of the library, goals, and determinism guarantees
 
-## Available Opeerations
+## Available Operations
 
 - [RMSNorm](#rmsnorm)
 - [MatMul](#matmul)
@@ -17,7 +17,7 @@ Brief description of the library, goals, and determinism guarantees
 ### Function
 
 ```python
-rmsnorm(input: torch.Tensor, weight: torch.Tensor, eps: float = 1e-6) -> torch.Tensor
+rmsnorm(input: torch.tensor, weight: torch.tensor, eps: float = 1e-6) -> torch.tensor
 ```
 
 ### Description
@@ -26,7 +26,7 @@ Computes the Root Mean Square Normalization (RMSNorm) of a tensor in a determini
 
 The Root Mean Square Normalization (RMSNorm) of a vector is defined as:
 
-![](<https://latex.codecogs.com/png.image?\dpi{120}\mathrm{RMSNorm}(x)=\frac{x}{\sqrt{\frac{1}{n}\sum_{i=1}^{n}x_i^2+\epsilon}}>)
+![](<https://latex.codecogs.com/png.image?\dpi{150}\large\color{white}\mathrm{RMSNorm}(x)=\frac{x}{\sqrt{\frac{1}{n}\sum_{i=1}^{n}x_i^2+\epsilon}}>)
 
 ### Parameters
 
