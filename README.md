@@ -7,7 +7,7 @@ It ensures identical floating-point results across runs, batches, and devices, r
 
 --
 
-# 🚀 Quick Links
+# Quick Links
 
 - [📘API Reference](./docs/api.md)
 - [✏️Design Reference](./docs/design.md)
@@ -22,13 +22,9 @@ It ensures identical floating-point results across runs, batches, and devices, r
 | Category       | Kernel Operation      | Reference                        |
 | -------------- | --------------------- | -------------------------------- |
 | Linear Algebra | Matrix Multiplication | [MatMul](./docs/api.md#matmul)   |
-| -------------- | --------------------- | -------------------------------- |
 | Normalization  | RMS Normalization     | [RmsNorm](./docs/api.md#rmsnorm) |
-| -------------- | --------------------- | -------------------------------- |
 | Reductions     | Sum                   | [Sum](./docs/api.md#sum)         |
-| -------------- | --------------------- | -------------------------------- |
 | Reductions     | Mean                  | [Mean](./docs/api.md#mean)       |
-| -------------- | --------------------- | -------------------------------- |
 | Activations    | Sigmoid               | [Sigmoid](./docs/api.md#sigmoid) |
 
 > _More Determinsitic Kernels Coming Soon_
@@ -61,13 +57,9 @@ pip install bitexact
 | Operation             | Throughput (vs PyTorch) | Notes                            |
 | --------------------- | ----------------------- | -------------------------------- |
 | Matrix Multiplication | 7.5x faster on average  | [MatMul](./docs/api.md#matmul)   |
-| --------------------- | ---------------------   | -------------------------------- |
 | RMS Normalziation     | tbd                     | [RmsNorm](./docs/api.md#rmsnorm) |
-| --------------------- | ---------------------   | -------------------------------- |
 | Sum                   |                         | [Sum](./docs/api.md#sum)         |
-| --------------------- | ---------------------   | -------------------------------- |
 | Mean                  |                         | [Mean](./docs/api.md#mean)       |
-| --------------------- | ---------------------   | -------------------------------- |
 | Sigmoid               |                         | [Sigmoid](./docs/api.md#sigmoid) |
 
 > _(Benchmarked on NVIDIA GeForce RTX 4060 Ti, PyTorch 2.6.0, CUDA 12.5)_
