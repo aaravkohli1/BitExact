@@ -41,10 +41,10 @@ The Root Mean Square Normalization (RMSNorm) of a vector is defined as:
 ### Example
 
 ```python
-import torch, batchinv
+import torch, bitexact
 x = torch.randn(1024, device='cuda')
 w = torch.ones(128, device='cuda')
-y = batchinv.rms_norm(x, w, eps=1e-6)
+y = bitexact.rms_norm(x, w, eps=1e-6)
 ```
 
 ### Notes
