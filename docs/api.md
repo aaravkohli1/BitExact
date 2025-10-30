@@ -66,7 +66,7 @@ Performs Matrix Multiplication (abbreviated as MatMul) on two tensors in a deter
 
 Mathematically, matrix multiplication is:
 
-![](https://latex.codecogs.com/png.image?\dpi{150}\color{white}\large\mathrm{MatMul}(A,B)=C,\quad C*{ij}=\sum*{k=1}^{n}A*{ik}B*{kj})
+![](<https://tex-image.com/render?color=white&bg=transparent&dpi=150&formula=\mathrm{MatMul}(A,B)=C,\quad%20C_{ij}=\sum_{k=1}^{n}A_{ik}B_{kj}>)
 
 ### Parameters
 
@@ -86,5 +86,10 @@ a = torch.randn(4, 8, device='cuda')
 b = torch.randn(8, 16, device='cuda')
 c = bitexact.matmul(a, b)
 ```
+
+### Notes
+
+- Determinism is only verified on a handful of random seeds (10/29/2025)
+- Does not allocate host-side memory
 
 ## Attention
