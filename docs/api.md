@@ -24,17 +24,9 @@ rmsnorm(input: torch.Tensor, weight: torch.Tensor, eps: float = 1e-6) -> torch.T
 
 Computes the Root Mean Square Normalization (RMSNorm) of a tensor in a deterministic batch-invariant manner. Implements fixed order reduction to ensure bit-identical results across runs, GPUs, and batch sizes.
 
-The Root Mean Square Normalization (RMSNorm) of a vector \( x \in \mathbb{R}^n \) is defined as:
+The Root Mean Square Normalization (RMSNorm) of a vector is defined as:
 
-\[
-\mathrm{RMSNorm}(x) = \frac{x}{\sqrt{\frac{1}{n} \sum\_{i=1}^{n} x_i^2 + \epsilon}}
-\]
-
-where:
-
-- \( x_i \) is the \( i^{th} \) element of the input,
-- \( n \) is the dimensionality of the vector,
-- \( \epsilon \) is a small constant for numerical stability.
+![](<https://latex.codecogs.com/png.image?\dpi{120}\mathrm{RMSNorm}(x)=\frac{x}{\sqrt{\frac{1}{n}\sum_{i=1}^{n}x_i^2+\epsilon}}>)
 
 ### Parameters
 
@@ -59,3 +51,7 @@ where:
 
     - Determinism is only verified on a handful of random seeds (10/29/2025)
     - Does not allocate host-side memory
+
+## MatMul
+
+## Attention
