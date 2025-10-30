@@ -6,9 +6,9 @@ Brief description of the library, goals, and determinism guarantees
 
 ## Available Opeerations
 
-    - [RMSNorm](#rmsnorm)
-    - [MatMul](#matmul)
-    - [Attention](#attention)
+- [RMSNorm](#rmsnorm)
+- [MatMul](#matmul)
+- [Attention](#attention)
 
 ---
 
