@@ -5,7 +5,13 @@ _Deterministic CUDA Kernels for Reproducible Deep Learning_
 BitExact is a research-driven CUDA library providing bit-exact deterministic GPU tensor operations.
 It ensures identical floating-point results across runs, batches, and devices, removing nondeterminism from key deep-learning computations.
 
---
+The library is designed to be plug and play with PyTorch. This means it can serve as a drop-in replacement for selected PyTorch tensor operations while guaranteeing bit-level reproducibility.
+
+BitExact is particularly suited for:
+
+- Model reproducibility research - verifying training consistency across runs
+- Numerical analysis and benchmarking - comparing model outputs with precision guarantees
+- Deployment pipelines where deterministic inference is required for compliance or scientific validation
 
 # Quick Links
 
@@ -14,8 +20,6 @@ It ensures identical floating-point results across runs, batches, and devices, r
 - [💨Performance Reference](./docs/performance.md)
 - [🧪Testing](./docs/testing.md)
 - [💡Contributing](#contributing)
-
---
 
 # Current Features
 
@@ -41,7 +45,7 @@ It ensures identical floating-point results across runs, batches, and devices, r
 ## From Source
 
 ```bash
-git clone https://github.com/yourusername/BitExact.git
+git clone https://github.com/aaravkohli1/BitExact.git
 cd BitExact
 pip install . --no-build-isolation
 ```
