@@ -10,8 +10,10 @@ setup(
             name='bitexact._C',
             sources=[
                 'src/bindings.cpp',
-                'src/kernels/rms_norm.cu',
-                'src/kernels/matmul.cu',
+                'src/ops/normalization/rms_norm.cu',
+                'src/ops/matmul/matmul.cu',
+                'src/ops/reductions/sum.cu',
+                'src/ops/reductions/mean.cu'
             ],
             include_dirs=[
                 'src',

@@ -1,6 +1,8 @@
 #include <torch/extension.h>
-#include "kernels/rms_norm.cuh"
-#include "kernels/matmul.cuh"
+#include "ops/matmul/matmul.cuh"
+#include "ops/reductions/sum.cuh"
+#include "ops/normalization/rms_norm.cuh"
+#include "ops/reductions/mean.cuh"
 
 torch::Tensor rms_norm(
     torch::Tensor input,
@@ -54,8 +56,53 @@ torch::Tensor matmul(torch::Tensor A, torch::Tensor B) {
     return C;
 }
 
+torch::Tensor sum(torch::Tensor input, int dim) {
+    TORCH_CHECK(input.is_cuda(), "input must be CUDA");
+    TORCH_CHECK(input.is_contiguous(), "input must be contiguous");
+    TORCH_CHECK(input.dim() == 2, "Only 2D tensors supported for now");
+    TORCH_CHECK(dim == -1 || dim == 1, "Only dim=-1 or dim=1 supported");
+    
+    int batch_size = input.size(0);
+    int hidden_dim = input.size(1);
+    
+    auto output = torch::empty({batch_size, 1}, input.options());
+    
+    sum_cuda(
+        input.data_ptr<float>(),
+        output.data_ptr<float>(),
+        batch_size,
+        hidden_dim
+    );
+    
+    return output;
+}
+
+torch::Tensor mean(torch::Tensor input, int dim) {
+    TORCH_CHECK(input.is_cuda(), "input must be CUDA");
+    TORCH_CHECK(input.is_contiguous(), "input must be contiguous");
+    TORCH_CHECK(input.dim() == 2, "Only 2D tensors supported for now");
+    
+    int batch_size = input.size(0);
+    int hidden_dim = input.size(1);
+    
+    auto output = torch::empty({batch_size, 1}, input.options());
+    
+    mean_cuda(
+        input.data_ptr<float>(),
+        output.data_ptr<float>(),
+        batch_size,
+        hidden_dim
+    );
+    
+    return output;
+}
+
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
     m.def("rms_norm", &rms_norm, "Batch-invariant RMS normalization",
           py::arg("input"), py::arg("weight"), py::arg("eps") = 1e-6);
     m.def("matmul", &matmul, "Batch-invariant matrix multiplication");
+    m.def("sum", &sum, "Batch-invariant sum reduction", 
+      py::arg("input"), py::arg("dim"));
+    m.def("mean", &mean, "Batch Invariant mean reduction", 
+    py::arg("input"), py::arg("dim"));
 }
