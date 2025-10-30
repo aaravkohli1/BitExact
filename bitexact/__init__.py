@@ -16,3 +16,7 @@ def sum(input: torch.Tensor, dim: int = -1) -> torch.Tensor:
 def mean(input: torch.Tensor, dim: int = -1) -> torch.Tensor:
     """Batch-invariant mean reduction along a dimension."""
     return _C.mean(input, dim)
+
+def sigmoid(input: torch.Tensor) -> torch.Tensor:
+    """Batch Invariant Sigmoid Activation"""
+    return _C.sigmoid(input)

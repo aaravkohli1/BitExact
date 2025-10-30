@@ -3,6 +3,7 @@
 #include "ops/reductions/sum.cuh"
 #include "ops/normalization/rms_norm.cuh"
 #include "ops/reductions/mean.cuh"
+#include "ops/activations/sigmoid.cuh"
 
 torch::Tensor rms_norm(
     torch::Tensor input,
@@ -97,6 +98,22 @@ torch::Tensor mean(torch::Tensor input, int dim) {
     return output;
 }
 
+torch::Tensor sigmoid(torch::Tensor input) {
+    TORCH_CHECK(input.is_cuda(), "input must be a CUDA tensor");
+    TORCH_CHECK(input.is_contiguous(), "input must be contiguous");
+
+    auto output = torch::empty_like(input);
+    int n = input.numel();
+
+    sigmoid_cuda(
+        input.data_ptr<float>(),
+        output.data_ptr<float>(),
+        n
+    );
+
+    return output;
+}
+
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
     m.def("rms_norm", &rms_norm, "Batch-invariant RMS normalization",
           py::arg("input"), py::arg("weight"), py::arg("eps") = 1e-6);
@@ -104,5 +121,7 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
     m.def("sum", &sum, "Batch-invariant sum reduction", 
       py::arg("input"), py::arg("dim"));
     m.def("mean", &mean, "Batch Invariant mean reduction", 
-    py::arg("input"), py::arg("dim"));
+      py::arg("input"), py::arg("dim"));
+    m.def("sigmoid", &sigmoid, "Deterministic Sigmoid Activation",
+      py::arg("input"));
 }
