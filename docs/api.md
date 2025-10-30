@@ -8,7 +8,9 @@ Brief description of the library, goals, and determinism guarantees
 
 - [RMSNorm](#rmsnorm)
 - [MatMul](#matmul)
-- [Attention](#attention)
+- [Sum](#sum)
+- [Mean](#mean)
+- [Sigmoid](#sigmoid)
 
 ---
 
@@ -17,7 +19,7 @@ Brief description of the library, goals, and determinism guarantees
 ### Function
 
 ```python
-rmsnorm(input: torch.tensor, weight: torch.tensor, eps: float = 1e-6) -> torch.tensor
+rmsnorm(input: torch.Tensor, weight: torch.Tensor, eps: float = 1e-6) -> torch.Tensor
 ```
 
 ### Description
@@ -57,7 +59,7 @@ y = bitexact.rms_norm(x, w, eps=1e-6)
 ### Function
 
 ```python
-matmmul(a: torch.tensor, b: torch.tensor) -> torch.tensor
+matmmul(a: torch.Tensor, b: torch.Tensor) -> torch.Tensor
 ```
 
 ### Description
@@ -80,7 +82,8 @@ Mathematically, matrix multiplication is:
 ### Example
 
 ```python
-import torch, bitexact
+import torch
+import bitexact
 torch.manual_seed(42)
 a = torch.randn(4, 8, device='cuda')
 b = torch.randn(8, 16, device='cuda')
@@ -92,4 +95,106 @@ c = bitexact.matmul(a, b)
 - Determinism is only verified on a handful of random seeds (10/29/2025)
 - Does not allocate host-side memory
 
-## Attention
+## Sum
+
+### Function
+
+```python
+sum(input: torch.Tensor, dim: int = -1) -> tensor.Tensor
+```
+
+### Description
+
+Sums a tensor in a deterministic batch-invariant manner. Implements fixed order reduction to ensure bit-identical results across runs, GPUs, and batch sizes.
+
+### Parameters
+
+- input: The input tensor
+- dim: The dimension of reduction
+
+### Returns
+
+- A tensor with the sum.
+
+### Example
+
+```python
+  import torch
+  import bitexact
+  x = torch.randn(32, 128, device='cuda')
+  bit_sum = bitexact.sum(x, dim=-1)
+```
+
+### Notes
+
+- Determinism is only verified on a handful of random seeds (10/29/2025)
+- Does not allocate host-side memory
+
+## Mean
+
+### Function
+
+```python
+mean(input: torch.Tensor, dim: int = -1) -> torch.Tensor
+```
+
+### Description
+
+Calculates the mean of a tensor in a deterministic batch-invariant manner. Implements fixed order reduction to ensure bit-identical results across runs, GPUs, and batch sizes.
+
+### Parameters
+
+- input: the input tensor
+- dim: the dimension to reduce along
+
+### Returns
+
+- A tensor containing the mean
+
+### Example
+
+```python
+import torch
+import bitexact
+x = torch.randn(32, 128, device='cuda')
+bitexact.mean(x, dim=-1)
+```
+
+### Notes
+
+- Determinism is only verified on a handful of random seeds (10/29/2025)
+- Does not allocate host-side memory
+
+## Sigmoid
+
+### Function
+
+```python
+sigmoid(input: torch.Tensor) -> torch.Tensor
+```
+
+### Description
+
+Calculates the sigmoid activation of a tensor in a deterministic manner. Sigmoid not perform reductions, uses IEEE expf conventions.
+
+### Parameters
+
+- input: the input tensor
+
+### Returns
+
+- a tensor containing the sigmoid activations
+
+### Example
+
+```python
+import torch
+import bitexact
+x = torch.randn(4096, device="cuda", dtype=torch.float32)
+bitexact.sigmoid(x)
+```
+
+### Notes
+
+- Determinism is only verified on a handful of random seeds (10/29/2025)
+- Does not allocate host-side memory
