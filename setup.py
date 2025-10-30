@@ -11,6 +11,7 @@ setup(
             sources=[
                 'src/bindings.cpp',
                 'src/kernels/rms_norm.cu',
+                'src/kernels/matmul.cu',
             ],
             include_dirs=[
                 'src',

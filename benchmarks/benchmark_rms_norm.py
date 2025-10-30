@@ -10,7 +10,6 @@ def benchmark_kernel(func, x, weight, num_warmup=10, num_iters=100):
     
     torch.cuda.synchronize()
     
-    # Benchmark
     start = torch.cuda.Event(enable_timing=True)
     end = torch.cuda.Event(enable_timing=True)
     
@@ -51,15 +50,15 @@ def run_benchmark(batch_size, hidden_dim):
     torch_time = benchmark_kernel(pytorch_rms_norm, x, weight)
     torch_bw = compute_bandwidth(batch_size, hidden_dim, torch_time)
     
-    # Benchmark our implementation
-    our_time = benchmark_kernel(bitexact.rms_norm, x, weight)
-    our_bw = compute_bandwidth(batch_size, hidden_dim, our_time)
+    # Benchmark BitExact
+    bit_time = benchmark_kernel(bitexact.rms_norm, x, weight)
+    bit_bw = compute_bandwidth(batch_size, hidden_dim, bit_time)
     
-    speedup = torch_time / our_time
+    speedup = torch_time / bit_time
     
     print(f"Shape: [{batch_size:4d}, {hidden_dim:4d}]")
     print(f"  PyTorch:  {torch_time:.4f} ms  ({torch_bw:.2f} GB/s)")
-    print(f"  Ours:     {our_time:.4f} ms  ({our_bw:.2f} GB/s)")
+    print(f"  BitExact:     {bit_time:.4f} ms  ({bit_bw:.2f} GB/s)")
     print(f"  Speedup:  {speedup:.2f}x")
     print()
     
@@ -67,10 +66,10 @@ def run_benchmark(batch_size, hidden_dim):
         'batch_size': batch_size,
         'hidden_dim': hidden_dim,
         'torch_time': torch_time,
-        'our_time': our_time,
+        'bit_time': bit_time,
         'speedup': speedup,
         'torch_bw': torch_bw,
-        'our_bw': our_bw
+        'bit_bw': bit_bw
     }
 
 if __name__ == "__main__":

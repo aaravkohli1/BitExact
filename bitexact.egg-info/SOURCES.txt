@@ -6,7 +6,9 @@ bitexact.egg-info/SOURCES.txt
 bitexact.egg-info/dependency_links.txt
 bitexact.egg-info/top_level.txt
 src/bindings.cpp
+src/kernels/matmul.cu
 src/kernels/rms_norm.cu
+src/kernels/matmul.cu
 src/kernels/rms_norm.cu
 tests/test_attention.py
 tests/test_determinism.py

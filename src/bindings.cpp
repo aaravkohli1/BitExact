@@ -1,5 +1,6 @@
 #include <torch/extension.h>
 #include "kernels/rms_norm.cuh"
+#include "kernels/matmul.cuh"
 
 torch::Tensor rms_norm(
     torch::Tensor input,
@@ -31,7 +32,30 @@ torch::Tensor rms_norm(
     return output;
 }
 
+torch::Tensor matmul(torch::Tensor A, torch::Tensor B) {
+    TORCH_CHECK(A.is_cuda() && B.is_cuda(), "Inputs must be CUDA");
+    TORCH_CHECK(A.is_contiguous() && B.is_contiguous(), "Must be contiguous");
+    TORCH_CHECK(A.dim() == 2 && B.dim() == 2, "Must be 2D");
+    TORCH_CHECK(A.size(1) == B.size(0), "Dimension mismatch");
+    
+    int M = A.size(0);
+    int K = A.size(1);
+    int N = B.size(1);
+    
+    auto C = torch::empty({M, N}, A.options());
+    
+    matmul_cuda(
+        A.data_ptr<float>(),
+        B.data_ptr<float>(),
+        C.data_ptr<float>(),
+        M, K, N
+    );
+    
+    return C;
+}
+
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
     m.def("rms_norm", &rms_norm, "Batch-invariant RMS normalization",
           py::arg("input"), py::arg("weight"), py::arg("eps") = 1e-6);
+    m.def("matmul", &matmul, "Batch-invariant matrix multiplication");
 }
