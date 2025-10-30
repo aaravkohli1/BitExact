@@ -40,7 +40,7 @@ The Root Mean Square Normalization (RMSNorm) of a vector is defined as:
 
 ### Example
 
-```
+```python
 import torch, batchinv
 x = torch.randn(1024, device='cuda')
 w = torch.ones(128, device='cuda')
