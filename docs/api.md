@@ -54,4 +54,50 @@ y = bitexact.rms_norm(x, w, eps=1e-6)
 
 ## MatMul
 
+### Function
+
+```python
+matmmul(a: torch.tensor, b: torch.tensor) -> torch.tensor
+```
+
+### Description
+
+Performs Matrix Multiplication (abbreviated as MatMul) on two tensors in a deterministic batch-invariant manner. Implements fixed order reduction to ensure bit-identical results across runs, GPUs, and batch sizes.
+
+Mathematically, matrix multiplication is:
+
+![](https://latex.codecogs.com/png.image?\dpi{150}\color{white}\large
+\begin{bmatrix}
+c*{11}&c*{12}\\
+c*{21}&c*{22}
+\end{bmatrix}
+=
+\begin{bmatrix}
+a*{11}&a*{12}\\
+a*{21}&a*{22}
+\end{bmatrix}
+\begin{bmatrix}
+b*{11}&b*{12}\\
+b*{21}&b*{22}
+\end{bmatrix})
+
+### Parameters
+
+- A: The first matrix for multiplication
+- B: The second matrix for multiplication
+
+### Returns
+
+- C: The result of matrix multiplication with matrices A and B
+
+### Example
+
+```python
+import torch, bitexact
+torch.manual_seed(42)
+a = torch.randn(4, 8, device='cuda')
+b = torch.randn(8, 16, device='cuda')
+c = bitexact.matmul(a, b)
+```
+
 ## Attention
