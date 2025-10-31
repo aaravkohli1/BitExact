@@ -139,6 +139,12 @@ for ($i = 1; $i -le 3; $i++) { pytest -v }
 
 The [`examples/deterministic_inference.py`](./examples/deterministic_inference.py) script demonstrates a small neural network using BitExact kernels (`matmul`, `rms_norm`, and `sigmoid`). Running the example verifies that the network’s outputs are **bit-for-bit identical** across multiple runs, confirming complete GPU determinism.
 
+Run the file with:
+
+```bash
+python examples/deterministic_inference.py
+```
+
 # Project Structure
 
 ```text
