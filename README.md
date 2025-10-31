@@ -205,7 +205,7 @@ Contributions are welcome! If you have an idea for a Kernel, feel free to implem
 
 Please ensure new kernels:
 
-1. Pass Deterministic equality tests (see [Testing](./test_determinism.py)).
+1. Pass Deterministic equality tests (see [Testing](./tests/test_determinism.py)).
 2. Use Warp-synchronous, non-atomic reduction patterns.
 3. Includes both .cu and .cuh files and a corresponding test.
 
