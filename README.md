@@ -65,15 +65,15 @@ Note that the tensors, and PyTorch is optimized for large batch workloads.
 
 | Operation             | Throughput (vs PyTorch) | Notes                                                                               |
 | --------------------- | ----------------------- | ----------------------------------------------------------------------------------- |
-| Matrix Multiplication | 0.47x                   | Check out the design here: [MatMul](./docs/performance.md#matmul)                   |
-| RMS Normalization     | 5.09x                   | Check out the design here: [RMSNorm](./docs/performance.md#rmsnorm)                 |
-| Layer Normalization   | 1.66x                   | Check out the design here: [LayerNorm](./docs/performance.md#layernorm)             |
-| Sum                   | 1.98x                   | Check out the design here: [Sum](./docs/performance.md#sum)                         |
-| Mean                  | 1.69x                   | Check out the design here: [Mean](./docs/performance.md#mean)                       |
-| Max                   | 1.75x                   | Check out the design here:[Max](./docs/performance.md#max)                          |
-| Min                   | 1.98x                   | Check out the design here: [Min](./docs/performance.md#min)                         |
-| Variance              | 1.35x                   | Check out the design here: [Var](./docs/performance.md#var)                         |
-| Sigmoid               | 0.92x                   | Check out the design here: [Sigmoid](./docs/performance.md#sigmoid)                 |
+| Matrix Multiplication | 0.47x                   |                                                                                     |
+| RMS Normalization     | 5.09x                   |                                                                                     |
+| Layer Normalization   | 1.66x                   |                                                                                     |
+| Sum                   | 1.98x                   |                                                                                     |
+| Mean                  | 1.69x                   |                                                                                     |
+| Max                   | 1.75x                   |                                                                                     |
+| Min                   | 1.98x                   |                                                                                     |
+| Variance              | 1.35x                   |                                                                                     |
+| Sigmoid               | 0.92x                   |                                                                                     |
 | **Average**           | **1.88x**               | Tests performed on small-scale tensors; PyTorch is optimized for large batch sizes. |
 
 > _(Benchmarked on NVIDIA GeForce RTX 4060 Ti, PyTorch 2.6.0, CUDA 12.5)_
