@@ -123,7 +123,6 @@ pytest tests/ -v
 # Project Structure
 
 ```text
-## 🧱 Project Structure
 
 bitexact/
 ├── bitexact/                         # Python bindings and high-level API
