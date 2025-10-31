@@ -3,7 +3,7 @@
 _Deterministic CUDA Kernels for Reproducible Deep Learning_
 
 [![PyPI](https://img.shields.io/pypi/v/bitexact.svg)](https://pypi.org/project/bitexact/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE.md)
 [![CUDA](https://img.shields.io/badge/CUDA-12.0%2B-green.svg)]()
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.1%2B-red.svg)]()
 
