@@ -30,10 +30,10 @@ BitExact is particularly suited for:
 | Normalization  | Layer Normalization   | [RmsNorm](./docs/api.md#layernorm) |
 | Reductions     | Sum                   | [Sum](./docs/api.md#sum)           |
 | Reductions     | Mean                  | [Mean](./docs/api.md#mean)         |
-| Reductions     | Max                   | [Mean](./docs/api.md#max)          |
-| Reductions     | Min                   | [Mean](./docs/api.md#min)          |
+| Reductions     | Max                   | [Max](./docs/api.md#max)           |
+| Reductions     | Min                   | [Min](./docs/api.md#min)           |
 | Activations    | Sigmoid               | [Sigmoid](./docs/api.md#sigmoid)   |
-| Activations    | Softmax               | [Sigmoid](./docs/api.md#softmax)   |
+| Activations    | Softmax               | [Softmax](./docs/api.md#softmax)   |
 
 > _More Determinsitic Kernels Coming Soon_
 
@@ -78,6 +78,6 @@ Contributions are welcome!
 
 Please ensure new kernels:
 
-1. Pass Deterministic equality tests across 3 or more runs.
+1. Pass Deterministic equality tests across 1000 or more runs (see [Test Suite](./setup.py)).
 2. Use Warp-synchronous, non-atomic reduction patterns.
 3. Includes both .cu and .cuh files and a corresponding test.

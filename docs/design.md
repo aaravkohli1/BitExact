@@ -1,4 +1,4 @@
-# BatchInv Design Document
+# BitExact Design Document
 
 ## 1. Overview
 
@@ -8,12 +8,10 @@
 
 ## 4. Deterministic MatMul
 
-## 5. Deterministic Reduction
+## 5. Deterministic Reductions
 
 ## 6. Determinism Techniques
 
 ## 7. Memory and Precision
-
-## 8. Testing and Validation
 
 ## 9. Future Work
