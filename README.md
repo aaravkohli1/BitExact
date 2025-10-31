@@ -17,7 +17,7 @@ BitExact is particularly suited for:
 
 - [API Reference 📘](./docs/api.md)
 - [Design Reference ✏️](./docs/design.md)
-- [Performance Reference 💨](./docs/performance.md)
+- [Performance Reference 💨](#performance-at-a-glance)
 - [Testing 🧪](./docs/testing.md)
 - [Contributing 💡](#contributing)
 
@@ -60,8 +60,6 @@ pip install bitexact
 ```
 
 # Performance at a Glance
-
-Note that the tensors, and PyTorch is optimized for large batch workloads.
 
 | Operation             | Throughput (vs PyTorch) | Notes                                                                                 |
 | --------------------- | ----------------------- | ------------------------------------------------------------------------------------- |
