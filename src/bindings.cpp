@@ -6,6 +6,8 @@
 #include "ops/activations/sigmoid.cuh"
 #include "ops/reductions/max.cuh"
 #include "ops/reductions/min.cuh"
+#include "ops/normalization/layer_norm.cuh"
+#include "ops/reductions/var.cuh"
 
 torch::Tensor rms_norm(
     torch::Tensor input,
@@ -158,6 +160,55 @@ torch::Tensor min(torch::Tensor input, int dim) {
     return output;
 }
 
+torch::Tensor layer_norm(
+    torch::Tensor input,
+    torch::Tensor weight,
+    torch::Tensor bias,
+    double eps = 1e-6
+) {
+ TORCH_CHECK(input.is_cuda(), "input must be CUDA");
+    TORCH_CHECK(input.is_contiguous(), "input must be contiguous");
+    TORCH_CHECK(input.dim() >= 2, "input must be at least 2D");
+
+    int64_t hidden_dim = input.size(-1);
+    int64_t batch_size = input.numel() / hidden_dim;
+
+    auto input_flat = input.view({batch_size, hidden_dim});
+    auto output_flat = torch::empty_like(input_flat);
+
+    layer_norm_cuda(
+        input_flat.data_ptr<float>(),
+        weight.data_ptr<float>(),
+        bias.data_ptr<float>(),
+        output_flat.data_ptr<float>(),
+        batch_size,
+        hidden_dim,
+        eps
+    );
+
+    return output_flat.view(input.sizes());
+}
+
+torch::Tensor var(torch::Tensor input, int dim) {
+    TORCH_CHECK(input.is_cuda(), "input must be CUDA");
+    TORCH_CHECK(input.is_contiguous(), "input must be contiguous");
+    TORCH_CHECK(input.dim() == 2, "Only 2D tensors supported for now");
+
+    int batch_size = input.size(0);
+    int hidden_dim = input.size(1);
+
+    auto output = torch::empty({batch_size, 1}, input.options());
+
+    var_cuda(
+        input.data_ptr<float>(),
+        output.data_ptr<float>(),
+        batch_size,
+        hidden_dim
+    );
+
+    return output;
+}
+
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
     m.def("rms_norm", &rms_norm, "Batch-invariant RMS normalization",
           py::arg("input"), py::arg("weight"), py::arg("eps") = 1e-6);
@@ -171,5 +222,9 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
     m.def("max", &max, "Batch-invariant max reduction",
       py::arg("input"), py::arg("dim"));
     m.def("min", &min, "Batch-invariant min reduction",
+      py::arg("input"), py::arg("dim"));
+    m.def("layer_norm", &layer_norm, "Batch-invariant Layer normalization",
+      py::arg("input"), py::arg("weight"), py::arg("bias"), py::arg("eps") = 1e-6);
+    m.def("var", &var, "Batch-invariant variance reduction", 
       py::arg("input"), py::arg("dim"));
 }

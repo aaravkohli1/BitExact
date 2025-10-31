@@ -1,17 +1,16 @@
 import torch
 import bitexact
+import pytest
 
 def test_matmul() -> None:
     torch.manual_seed(42)
-
     a = torch.randn(4, 8, device='cuda')
     b = torch.randn(8, 16, device='cuda')
     c = bitexact.matmul(a, b)
-    reference = torch.matmul(a, b)
 
+    reference = torch.matmul(a, b)
     a_big = torch.randn(32, 128, device='cuda')
     b = torch.randn(128, 64, device='cuda')
-
     c_big = bitexact.matmul(a_big, b)
     c_small = bitexact.matmul(a_big[:1], b)
     diff = (c_big[0] - c_small[0]).abs().max().item()
@@ -27,19 +26,14 @@ def test_max() -> None:
 
 def test_min() -> None:
     x = torch.randn(32, 128, device='cuda')
-
     bit_min = bitexact.min(x, dim=-1)
     torch_min = torch.min(x, dim=-1, keepdim=True)[0]
-
-    diff = (bit_min - torch_min).abs().max().item()
-
     min_big = bitexact.min(x, dim=-1)
     min_small = bitexact.min(x[:1], dim=-1)
-
     invariance_diff = (min_big[0] - min_small[0]).abs().item()
 
     assert invariance_diff == 0.0
-    assert torch.allclose(bit_min, torch_min, rtol=1e-5, atol=1e-6)
+    assert torch.allclose(bit_min, torch_min, atol=1e-5, rtol=0)
 
 def test_mean() -> None:
     x = torch.randn(32, 128, device='cuda')
@@ -69,9 +63,7 @@ def test_rmsnorm() -> None:
     assert y.shape == x.shape, "Invalid Shapes"
     assert not torch.isnan(y).any(), "Invalid Output Tensor"
     assert diff == 0.0, "Not batch invariant :("
-
-def test_layernorm() -> None:
-    return
+   
 
 def test_sum() -> None:
     x = torch.randn(32, 128, device='cuda')
@@ -83,17 +75,29 @@ def test_sum() -> None:
     assert diff == 0.0, "Not batch invariant :("
     assert torch.allclose(bit_sum, torch_sum, atol=1e-5, rtol=0)
 
-def run_suite(iterations=1000):
-    for _ in range(iterations):
-        if _ % 100 == 0:
-            torch.cuda.synchronize()
-            torch.cuda.empty_cache()
-        test_rmsnorm()
-        test_matmul()
-        test_mean()
-        test_max()
-        test_min()
-        test_sum()
+@pytest.mark.parametrize("shape", [(32, 64), (4, 16, 128)])
+@pytest.mark.parametrize("eps", [1e-5, 1e-6])
+def test_layernorm_determinism(shape, eps):
+    torch.manual_seed(42)
+    x = torch.randn(shape, dtype=torch.float32, device="cuda")
 
-if __name__ == "__main__":
-    run_suite()
+    ref = torch.nn.functional.layer_norm(
+    x, normalized_shape=x.shape[-1:], eps=eps
+    )
+
+    weight = torch.ones(x.shape[-1], device="cuda")
+    bias = torch.zeros(x.shape[-1], device="cuda")
+
+    y1 = bitexact.layer_norm(x, weight, bias, eps=eps)
+    y2 = bitexact.layer_norm(x, weight, bias, eps=eps)
+
+    assert torch.allclose(y1, ref, atol=1e-5)
+    assert torch.allclose(y1, y2, atol=0)
+
+
+def test_var():
+    x = torch.randn(16, 64, device='cuda')
+    bit_var = bitexact.var(x, dim=-1)
+    torch_var = x.var(dim=-1, keepdim=True, unbiased=False)
+    assert torch.allclose(bit_var, torch_var, atol=1e-5)
+

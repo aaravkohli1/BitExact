@@ -16,11 +16,13 @@ setup(
                 'src/ops/reductions/mean.cu',
                 'src/ops/activations/sigmoid.cu',
                 'src/ops/reductions/max.cu',
-                'src/ops/reductions/min.cu'
+                'src/ops/reductions/min.cu',
+                'src/ops/normalization/layer_norm.cu',
+                'src/ops/reductions/var.cu',
             ],
             include_dirs=[
                 'src',
-                torch.utils.cpp_extension.include_paths()[0],  # Add torch includes
+                torch.utils.cpp_extension.include_paths()[0],
             ],
         )
     ],

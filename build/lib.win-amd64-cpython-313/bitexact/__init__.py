@@ -27,4 +27,12 @@ def max(input: torch.Tensor, dim: int = -1) -> torch.Tensor:
 
 def min(input: torch.Tensor, dim: int = -1) -> torch.Tensor:
     """Batch-invariant min reduction along a dimension."""
-    return _C.max(input, dim)
+    return _C.min(input, dim)
+
+def layer_norm(input: torch.Tensor, weight: torch.Tensor, bias: torch.Tensor, eps: float=1e-6) -> torch.Tensor:
+    """Batch invariant layer normalization"""
+    return _C.layer_norm(input, weight, bias, eps)
+
+def var(input: torch.Tensor, dim: int = -1) -> torch.Tensor:
+    """Bath Invariant Variance"""
+    return _C.var(input, dim)
