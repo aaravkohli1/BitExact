@@ -135,6 +135,10 @@ for ($i = 1; $i -le 3; $i++) { pytest -v }
 
 > _All tests verify bit-exact equivalence to PyTorch’s reference implementations and ensure reproducibility across multiple runs and devices._
 
+## Deterministic Inference
+
+The [`examples/deterministic_inference.py`](./examples/deterministic_inference.py) script demonstrates a small neural network using BitExact kernels (`matmul`, `rms_norm`, and `sigmoid`). Running the example verifies that the network’s outputs are **bit-for-bit identical** across multiple runs, confirming complete GPU determinism.
+
 # Project Structure
 
 ```text
@@ -212,8 +216,7 @@ Please ensure new kernels:
 
 # Project Status
 
-This was my first time writing CUDA kernels, and sort of a quick weekend experiment to understand deterministic GPU computation.  
-BitExact works reliably for all implemented operations, but it’s mostly a one-off research project rather than an actively maintained library.
+This was my first time writing CUDA kernels, and sort of a quick weekend experiment to understand deterministic GPU computation. BitExact works reliably for all implemented operations, but it’s mostly a one-off research project rather than an actively maintained library.
 
 ### Acknowledgements
 
