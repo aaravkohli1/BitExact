@@ -27,6 +27,7 @@ BitExact is particularly suited for:
 - [Testing 🧪](./docs/testing.md)
 - [Project Structure 🏛️](#structure)
 - [Contributing 💡](#contributions)
+- [Project Status ✅](#project-status)
 - [Acknowledgements 🔍](#acknowledgements)
 
 # Quick Start Example
@@ -54,7 +55,7 @@ print(y)
 | Reductions     | Min                   | [Min](./docs/api.md#min)           |
 | Activations    | Sigmoid               | [Sigmoid](./docs/api.md#sigmoid)   |
 
-> _More Determinsitic Kernels Coming Soon_
+> _More Determinsitic Kernels May Be Coming Soon_
 
 # Installation
 
@@ -205,9 +206,14 @@ Contributions are welcome! If you have an idea for a Kernel, feel free to implem
 
 Please ensure new kernels:
 
-1. Pass Deterministic equality tests (see [Testing](./tests/test_determinism.py)).
+1. Pass Deterministic equality tests (see [testing suite](./tests/test_determinism.py)).
 2. Use Warp-synchronous, non-atomic reduction patterns.
 3. Includes both .cu and .cuh files and a corresponding test.
+
+# Project Status
+
+This was my first time writing CUDA kernels, and sort of a quick weekend experiment to understand deterministic GPU computation.  
+BitExact works reliably for all implemented operations, but it’s mostly a one-off research project rather than an actively maintained library.
 
 ### Acknowledgements
 
