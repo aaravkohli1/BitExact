@@ -5,6 +5,7 @@
 #include "ops/reductions/mean.cuh"
 #include "ops/activations/sigmoid.cuh"
 #include "ops/reductions/max.cuh"
+#include "ops/reductions/min.cuh"
 
 torch::Tensor rms_norm(
     torch::Tensor input,
@@ -136,6 +137,27 @@ torch::Tensor max(torch::Tensor input, int dim) {
     return output;
 }
 
+torch::Tensor min(torch::Tensor input, int dim) {
+    TORCH_CHECK(input.is_cuda(), "input must be CUDA");
+    TORCH_CHECK(input.is_contiguous(), "input must be contiguous");
+    TORCH_CHECK(input.dim() == 2, "Only 2D tensors supported");
+    TORCH_CHECK(dim == -1 || dim == 1, "Only dim=-1 or dim=1 supported");
+    
+    int batch_size = input.size(0);
+    int hidden_dim = input.size(1);
+    
+    auto output = torch::empty({batch_size, 1}, input.options());
+    
+    min_cuda(
+        input.data_ptr<float>(),
+        output.data_ptr<float>(),
+        batch_size,
+        hidden_dim
+    );
+    
+    return output;
+}
+
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
     m.def("rms_norm", &rms_norm, "Batch-invariant RMS normalization",
           py::arg("input"), py::arg("weight"), py::arg("eps") = 1e-6);
@@ -147,5 +169,7 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
     m.def("sigmoid", &sigmoid, "Deterministic Sigmoid Activation",
       py::arg("input"));
     m.def("max", &max, "Batch-invariant max reduction",
+      py::arg("input"), py::arg("dim"));
+    m.def("min", &min, "Batch-invariant min reduction",
       py::arg("input"), py::arg("dim"));
 }

@@ -15,7 +15,8 @@ setup(
                 'src/ops/reductions/sum.cu',
                 'src/ops/reductions/mean.cu',
                 'src/ops/activations/sigmoid.cu',
-                'src/ops/reductions/max.cu'
+                'src/ops/reductions/max.cu',
+                'src/ops/reductions/min.cu'
             ],
             include_dirs=[
                 'src',
