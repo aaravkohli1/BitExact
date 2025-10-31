@@ -63,18 +63,18 @@ pip install bitexact
 
 Note that the tensors, and PyTorch is optimized for large batch workloads.
 
-| Operation             | Throughput (vs PyTorch) | Notes                                                                                  |
-| --------------------- | ----------------------- | -------------------------------------------------------------------------------------- |
-| Matrix Multiplication | 0.47x                   | [MatMul](./docs/api.md#matmul)                                                         |
-| RMS Normalization     | 5.09x                   | [RMSNorm](./docs/api.md#rmsnorm)                                                       |
-| Layer Normalization   | 1.66x                   | [LayerNorm](./docs/api.md#layernorm)                                                   |
-| Sum                   | 1.98x                   | [Sum](./docs/api.md#sum)                                                               |
-| Mean                  | 1.69x                   | [Mean](./docs/api.md#mean)                                                             |
-| Max                   | 1.75x                   | [Max](./docs/api.md#max)                                                               |
-| Min                   | 1.98x                   | [Min](./docs/api.md#min)                                                               |
-| Variance              | 1.35x                   | [Var](./docs/api.md#var)                                                               |
-| Sigmoid               | 0.92x                   | [Sigmoid](./docs/api.md#sigmoid)                                                       |
-| **Average**           | **1.88x**               | Tests performed on small-scale tensors; PyTorch is optimized for<br>large batch sizes. |
+| Operation             | Throughput (vs PyTorch) | Notes                                                                               |
+| --------------------- | ----------------------- | ----------------------------------------------------------------------------------- |
+| Matrix Multiplication | 0.47x                   | [MatMul](./docs/api.md#matmul)                                                      |
+| RMS Normalization     | 5.09x                   | [RMSNorm](./docs/api.md#rmsnorm)                                                    |
+| Layer Normalization   | 1.66x                   | [LayerNorm](./docs/api.md#layernorm)                                                |
+| Sum                   | 1.98x                   | [Sum](./docs/api.md#sum)                                                            |
+| Mean                  | 1.69x                   | [Mean](./docs/api.md#mean)                                                          |
+| Max                   | 1.75x                   | [Max](./docs/api.md#max)                                                            |
+| Min                   | 1.98x                   | [Min](./docs/api.md#min)                                                            |
+| Variance              | 1.35x                   | [Var](./docs/api.md#var)                                                            |
+| Sigmoid               | 0.92x                   | [Sigmoid](./docs/api.md#sigmoid)                                                    |
+| **Average**           | **1.88x**               | Tests performed on small-scale tensors; PyTorch is optimized for large batch sizes. |
 
 > _(Benchmarked on NVIDIA GeForce RTX 4060 Ti, PyTorch 2.6.0, CUDA 12.5)_
 
