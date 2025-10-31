@@ -2,6 +2,11 @@
 
 _Deterministic CUDA Kernels for Reproducible Deep Learning_
 
+[![PyPI](https://img.shields.io/pypi/v/bitexact.svg)](https://pypi.org/project/bitexact/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![CUDA](https://img.shields.io/badge/CUDA-12.0%2B-green.svg)]()
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.1%2B-red.svg)]()
+
 BitExact is a research-driven CUDA library providing bit-exact deterministic GPU tensor operations.
 It ensures identical floating-point results across runs, batches, and devices, removing nondeterminism from key deep-learning computations.
 
@@ -15,12 +20,26 @@ BitExact is particularly suited for:
 
 # Quick Links
 
+- [Quick Start](#quick-start-example)
 - [API Reference 📘](./docs/api.md)
 - [Design Reference ✏️](./docs/design.md)
 - [Performance Reference 💨](#performance-at-a-glance)
 - [Testing 🧪](./docs/testing.md)
+- [Project Structure 🏛️](#structure)
 - [Contributing 💡](#contributions)
 - [Acknowledgements 🔍](#acknowledgements)
+
+# Quick Start Example
+
+```python
+import torch, bitexact
+
+x = torch.randn(4, 4, device="cuda")
+w = torch.ones(4, device="cuda")
+
+y = bitexact.rms_norm(x, w)
+print(y)
+```
 
 # Current Features
 
@@ -77,6 +96,91 @@ pip install bitexact
 
 > _(Benchmarked on NVIDIA GeForce RTX 4060 Ti, PyTorch 2.6.0, CUDA 12.5)_
 
+## Local Benchmarks
+
+## Interpretation of Results
+
+BitExact’s performance advantage comes primarily from kernel fusion and deterministic reduction order, which minimize synchronization and memory traffic. However, PyTorch’s fused kernels outperform in large-batch GEMM and high-throughput workloads. These results emphasize that BitExact prioritizes determinism and reproducibility over raw FLOPS.
+
+# Testing
+
+BitExact includes deterministic equality tests for all kernels.
+
+Run the full test suite with:
+
+```bash
+pytest tests/ -v
+```
+
+> _All tests verify bit-exact equivalence to PyTorch’s reference implementations and ensure reproducibility across multiple runs and devices._
+
+# Project Structure
+
+````text
+## 🧱 Project Structure
+
+```text
+bitexact/
+├── bitexact/                         # Python bindings and high-level API
+│   └── __init__.py
+│
+├── benchmarks/                       # Benchmarking suite for performance comparison
+│   ├── benchmark.py
+│   └── utils.py
+│
+├── docs/                             # Technical documentation
+│   ├── api.md
+│   └── design.md
+│
+├── examples/                         # Minimal runnable examples
+│   ├── basic_usage.py                # Simple demonstration of deterministic ops
+│   └── deterministic_inference.py    # Reproducible model inference pipeline
+│
+├── src/                              # Core CUDA/C++ source
+│   ├── bindings.cpp                  # PyTorch extension bindings (exposes kernels to Python)
+│   │
+│   └── ops/                          # Kernel implementations
+│       ├── matmul/                   # Matrix multiplication kernels
+│       │   ├── matmul.cu
+│       │   └── matmul.cuh
+│       │
+│       ├── reductions/               # Deterministic reduction kernels
+│       │   ├── sum.cu
+│       │   ├── sum.cuh
+│       │   ├── mean.cu
+│       │   ├── mean.cuh
+│       │   ├── max.cu
+│       │   ├── max.cuh
+│       │   ├── min.cu
+│       │   ├── min.cuh
+│       │   ├── var.cu
+│       │   └── var.cuh
+│       │
+│       ├── normalization/            # Normalization kernels
+│       │   ├── rms_norm.cu
+│       │   ├── rms_norm.cuh
+│       │   ├── layer_norm.cu
+│       │   └── layer_norm.cuh
+│       │
+│       ├── activations/              # Activation kernels
+│       │   ├── sigmoid.cu
+│       │   └── sigmoid.cuh
+│       │
+│       └── utils/                    # Shared CUDA utilities
+│           ├── cuda_utils.cuh        # Common device helpers (grid-stride loops, etc.)
+│           ├── dtype_utils.cuh       # Type casting and precision utilities
+│           └── reduction.cuh         # Shared reduction patterns for deterministic ops
+│
+├── tests/                            # Pytest suite
+│   ├── conftest.py
+│   └── test_determinism.py
+│
+├── LICENSE                           # License file
+├── README.md                         # Project overview and documentation
+└── setup.py                          # Build and installation script
+
+````
+
 # Contributions
 
 Contributions are welcome! If you have an idea for a Kernel, feel free to implement it (the largest missing one is attention).
@@ -92,3 +196,7 @@ Please ensure new kernels:
 This project draws inspiration from research by [Thinking Machines Lab](https://thinkingmachines.ai/)
 on deterministic GPU computation and reproducible deep learning.
 Their exploration of bit-exact kernels and floating-point determinism informed the design philosophy of BitExact.
+
+```
+
+```
