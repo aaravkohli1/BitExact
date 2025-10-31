@@ -96,11 +96,17 @@ pip install bitexact
 
 > _(Benchmarked on NVIDIA GeForce RTX 4060 Ti, PyTorch 2.6.0, CUDA 12.5)_
 
-## Local Benchmarks
-
 ## Interpretation of Results
 
 BitExact’s performance advantage comes primarily from kernel fusion and deterministic reduction order, which minimize synchronization and memory traffic. However, PyTorch’s fused kernels outperform in large-batch GEMM and high-throughput workloads. These results emphasize that BitExact prioritizes determinism and reproducibility over raw FLOPS.
+
+## Local Benchmarks
+
+Run Local benchmarks with:
+
+```bash
+python -m benchmarks.benchmark
+```
 
 # Testing
 
