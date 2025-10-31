@@ -118,6 +118,20 @@ Run the full test suite with:
 pytest tests/ -v
 ```
 
+Because many tests utilize randomized tensors, running the suite multiple times can help verify reproducibility and numerical stability. You can run the tests any number of times, the examples below simply use 3 as a placeholder.
+
+**Linux**
+
+```bash
+for i in {1..3}; do pytest -v; done
+```
+
+**Windows**
+
+```powershell
+for ($i = 1; $i -le 3; $i++) { pytest -v }
+```
+
 > _All tests verify bit-exact equivalence to PyTorch’s reference implementations and ensure reproducibility across multiple runs and devices._
 
 # Project Structure

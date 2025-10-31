@@ -70,10 +70,23 @@ if __name__ == "__main__":
     benchmark_op("MatMul", torch.matmul, bitexact.matmul, A, B)
 
     # ---- Sum / Mean / Max / Min / Sigmoid (keep) ----
-    benchmark_op("Sum", torch.sum, bitexact.sum, x)
-    benchmark_op("Mean", torch.mean, bitexact.mean, x)
-    benchmark_op("Max", torch.max, bitexact.max, x)
-    benchmark_op("Min", torch.min, bitexact.min, x)
+    # Reductions with dim parameter
+    benchmark_op("Sum", 
+             lambda X: torch.sum(X, dim=-1, keepdim=True), 
+             lambda X: bitexact.sum(X, dim=-1), x)
+
+    benchmark_op("Mean", 
+             lambda X: torch.mean(X, dim=-1, keepdim=True), 
+             lambda X: bitexact.mean(X, dim=-1), x)
+
+    benchmark_op("Max", 
+             lambda X: torch.max(X, dim=-1, keepdim=True)[0],
+             lambda X: bitexact.max(X, dim=-1), x)
+
+    benchmark_op("Min", 
+             lambda X: torch.min(X, dim=-1, keepdim=True)[0],
+             lambda X: bitexact.min(X, dim=-1), x)
+
     benchmark_op("Sigmoid", torch.sigmoid, bitexact.sigmoid, x)
 
     # ---- RMSNorm: formula-aligned reference ----
@@ -86,7 +99,7 @@ if __name__ == "__main__":
     # ---- LayerNorm: formula-aligned reference (population variance, eps inside sqrt) ----
     def ref_layernorm(inp, wt, bias, eps=1e-6):
         mu  = inp.mean(dim=-1, keepdim=True)
-        var = (inp - mu).pow(2).mean(dim=-1, keepdim=True)  # unbiased=False (population)
+        var = (inp - mu).pow(2).mean(dim=-1, keepdim=True)
         y   = (inp - mu) / torch.sqrt(var + eps)
         return y * wt + bias
 
@@ -96,7 +109,7 @@ if __name__ == "__main__":
     # ---- Variance: explicit population variance reference ----
     def ref_variance(inp, dim=-1):
         mu  = inp.mean(dim=dim, keepdim=True)
-        var = (inp - mu).pow(2).mean(dim=dim, keepdim=False)  # unbiased=False
+        var = (inp - mu).pow(2).mean(dim=dim, keepdim=True) 
         return var
 
     benchmark_op("Variance", lambda X: ref_variance(X, dim=-1), bitexact.var, x)
