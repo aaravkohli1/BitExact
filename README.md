@@ -122,10 +122,9 @@ pytest tests/ -v
 
 # Project Structure
 
-````text
+```text
 ## 🧱 Project Structure
 
-```text
 bitexact/
 ├── bitexact/                         # Python bindings and high-level API
 │   └── __init__.py
@@ -185,7 +184,7 @@ bitexact/
 ├── README.md                         # Project overview and documentation
 └── setup.py                          # Build and installation script
 
-````
+```
 
 # Contributions
 
