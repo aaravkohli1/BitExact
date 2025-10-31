@@ -7,10 +7,14 @@ Brief description of the library, goals, and determinism guarantees
 ## Available Operations
 
 - [RMSNorm](#rmsnorm)
+- [LayerNorm](#layernorm)
 - [MatMul](#matmul)
 - [Sum](#sum)
 - [Mean](#mean)
+- [Max](#max)
+- [Min](#min)
 - [Sigmoid](#sigmoid)
+- [Softmax](#softmax)
 
 ---
 
@@ -53,6 +57,8 @@ y = bitexact.rms_norm(x, w, eps=1e-6)
 
 - Determinism is only verified on a handful of random seeds (10/29/2025)
 - Does not allocate host-side memory
+
+## LayerNorm
 
 ## MatMul
 
@@ -165,6 +171,10 @@ bitexact.mean(x, dim=-1)
 - Determinism is only verified on a handful of random seeds (10/29/2025)
 - Does not allocate host-side memory
 
+## Max
+
+## Min
+
 ## Sigmoid
 
 ### Function
@@ -198,3 +208,5 @@ bitexact.sigmoid(x)
 
 - Determinism is only verified on a handful of random seeds (10/29/2025)
 - Does not allocate host-side memory
+
+## Softmax

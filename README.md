@@ -23,13 +23,17 @@ BitExact is particularly suited for:
 
 # Current Features
 
-| Category       | Kernel Operation      | Reference                        |
-| -------------- | --------------------- | -------------------------------- |
-| Linear Algebra | Matrix Multiplication | [MatMul](./docs/api.md#matmul)   |
-| Normalization  | RMS Normalization     | [RmsNorm](./docs/api.md#rmsnorm) |
-| Reductions     | Sum                   | [Sum](./docs/api.md#sum)         |
-| Reductions     | Mean                  | [Mean](./docs/api.md#mean)       |
-| Activations    | Sigmoid               | [Sigmoid](./docs/api.md#sigmoid) |
+| Category       | Kernel Operation      | Reference                          |
+| -------------- | --------------------- | ---------------------------------- |
+| Linear Algebra | Matrix Multiplication | [MatMul](./docs/api.md#matmul)     |
+| Normalization  | RMS Normalization     | [RmsNorm](./docs/api.md#rmsnorm)   |
+| Normalization  | Layer Normalization   | [RmsNorm](./docs/api.md#layernorm) |
+| Reductions     | Sum                   | [Sum](./docs/api.md#sum)           |
+| Reductions     | Mean                  | [Mean](./docs/api.md#mean)         |
+| Reductions     | Max                   | [Mean](./docs/api.md#max)          |
+| Reductions     | Min                   | [Mean](./docs/api.md#min)          |
+| Activations    | Sigmoid               | [Sigmoid](./docs/api.md#sigmoid)   |
+| Activations    | Softmax               | [Sigmoid](./docs/api.md#softmax)   |
 
 > _More Determinsitic Kernels Coming Soon_
 
