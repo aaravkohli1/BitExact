@@ -20,3 +20,7 @@ def mean(input: torch.Tensor, dim: int = -1) -> torch.Tensor:
 def sigmoid(input: torch.Tensor) -> torch.Tensor:
     """Batch Invariant Sigmoid Activation"""
     return _C.sigmoid(input)
+
+def max(input: torch.Tensor, dim: int = -1) -> torch.Tensor:
+    """Batch-invariant max reduction along a dimension."""
+    return _C.max(input, dim)

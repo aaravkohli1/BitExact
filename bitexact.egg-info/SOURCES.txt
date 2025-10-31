@@ -1,3 +1,5 @@
+LICENSE.md
+README.md
 pyproject.toml
 setup.py
 bitexact/__init__.py
@@ -9,8 +11,10 @@ src/bindings.cpp
 src/ops/activations/sigmoid.cu
 src/ops/matmul/matmul.cu
 src/ops/normalization/rms_norm.cu
+src/ops/reductions/max.cu
 src/ops/reductions/mean.cu
 src/ops/reductions/sum.cu
+src/ops/activations/sigmoid.cu
 src/ops/matmul/matmul.cu
 src/ops/normalization/rms_norm.cu
 src/ops/reductions/mean.cu

@@ -14,19 +14,13 @@ setup(
                 'src/ops/matmul/matmul.cu',
                 'src/ops/reductions/sum.cu',
                 'src/ops/reductions/mean.cu',
-                'src/ops/activations/sigmoid.cu'
+                'src/ops/activations/sigmoid.cu',
+                'src/ops/reductions/max.cu'
             ],
             include_dirs=[
                 'src',
                 torch.utils.cpp_extension.include_paths()[0],  # Add torch includes
             ],
-              extra_compile_args={
-                "nvcc": [
-                    "--fmad=false",
-                    "--prec-div=true",
-                    "--prec-sqrt=true",
-                ]
-            },
         )
     ],
     cmdclass={'build_ext': BuildExtension}

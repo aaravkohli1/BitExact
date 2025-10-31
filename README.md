@@ -15,11 +15,11 @@ BitExact is particularly suited for:
 
 # Quick Links
 
-- [📘API Reference](./docs/api.md)
-- [✏️Design Reference](./docs/design.md)
-- [💨Performance Reference](./docs/performance.md)
-- [🧪Testing](./docs/testing.md)
-- [💡Contributing](#contributing)
+- [API Reference 📘](./docs/api.md)
+- [Design Reference ✏️](./docs/design.md)
+- [Performance Reference 💨](./docs/performance.md)
+- [Testing 🧪](./docs/testing.md)
+- [Contributing 💡](#contributing)
 
 # Current Features
 
