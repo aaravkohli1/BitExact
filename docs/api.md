@@ -14,199 +14,62 @@ Brief description of the library, goals, and determinism guarantees
 - [Max](#max)
 - [Min](#min)
 - [Sigmoid](#sigmoid)
-- [Softmax](#softmax)
-
----
 
 ## RMSNorm
 
-### Function
-
 ```python
-rmsnorm(input: torch.Tensor, weight: torch.Tensor, eps: float = 1e-6) -> torch.Tensor
+bitexact.rmsnorm(input: torch.Tensor, weight: torch.Tensor, eps=1e-6) -> torch.Tensor:
 ```
 
-### Description
+The RMSNorm Kernel computes the Root Mean Square Layer Normalization over a small batch of inputs. This kernel implements the operation as described in the [Design Reference](#./design.md#rmsnorm).
 
-Computes the Root Mean Square Normalization (RMSNorm) of a tensor in a deterministic batch-invariant manner. Implements fixed order reduction to ensure bit-identical results across runs, GPUs, and batch sizes.
+Mathetmatically, given an input vector $x \in IR^n$, RMSNorm is defined as:
 
-The Root Mean Square Normalization (RMSNorm) of a vector is defined as:
+$$
+RMSNorm(x) = \frac{x}{\sqrt{\frac{1}{n} \sum_{i=1}^{n} x_i^{2} + \epsilon}} \odot w
+$$
 
-![](<https://latex.codecogs.com/png.image?\dpi{150}\large\color{white}\mathrm{RMSNorm}(x)=\frac{x}{\sqrt{\frac{1}{n}\sum_{i=1}^{n}x_i^2+\epsilon}}>)
+where:
+
+- $x_i$ is the $i^{th}$ element of the input vector
+- $n$ is the dimensionality of the vector
+- $\epsilon$ is a small constant added for numerical stability
+- $w$ is a learned scaling parameter (the weight)
 
 ### Parameters
 
-- Input: The input vector (Must be continous and of dtype float32 or float16)
-- Weight: The weight vector
-- Eps: Epsilon constant
+| Parameter | Type         | Function                                   |
+| --------- | ------------ | ------------------------------------------ |
+| input     | torch.Tensor | The input batch to apply RMSNorm to        |
+| weight    | torch.Tensor | The weight tensor for the RMSNorm formula  |
+| eps       | float        | The constant (optional - defaults to 1e-6) |
 
 ### Returns
 
-- Output: Normalized tensor of same shape and dtype
+A tensor containing the RMSNorm applications.
 
 ### Example
 
 ```python
-import torch, bitexact
-x = torch.randn(1024, device='cuda')
-w = torch.ones(128, device='cuda')
-y = bitexact.rms_norm(x, w, eps=1e-6)
+import torch
+import bitexact as bxt
+
+ x = torch.randn(4, 8, device='cuda')
+ w = torch.ones(8, device='cuda')
+
+ y = bxt.rms_norm(x, w)
 ```
-
-### Notes
-
-- Determinism is only verified on a handful of random seeds (10/29/2025)
-- Does not allocate host-side memory
 
 ## LayerNorm
 
 ## MatMul
 
-### Function
-
-```python
-matmmul(a: torch.Tensor, b: torch.Tensor) -> torch.Tensor
-```
-
-### Description
-
-Performs Matrix Multiplication (abbreviated as MatMul) on two tensors in a deterministic batch-invariant manner. Implements fixed order reduction to ensure bit-identical results across runs, GPUs, and batch sizes.
-
-Mathematically, matrix multiplication is:
-
-![](<https://math.vercel.app/?from=\color{white}\mathrm{MatMul}(A,B)=C,\quad%20C_{ij}=\sum_{k=1}^{n}A_{ik}B_{kj}>)
-
-### Parameters
-
-- A: The first matrix for multiplication
-- B: The second matrix for multiplication
-
-### Returns
-
-- C: The result of matrix multiplication with matrices A and B
-
-### Example
-
-```python
-import torch
-import bitexact
-torch.manual_seed(42)
-a = torch.randn(4, 8, device='cuda')
-b = torch.randn(8, 16, device='cuda')
-c = bitexact.matmul(a, b)
-```
-
-### Notes
-
-- Determinism is only verified on a handful of random seeds (10/29/2025)
-- Does not allocate host-side memory
-
 ## Sum
 
-### Function
-
-```python
-sum(input: torch.Tensor, dim: int = -1) -> tensor.Tensor
-```
-
-### Description
-
-Sums a tensor in a deterministic batch-invariant manner. Implements fixed order reduction to ensure bit-identical results across runs, GPUs, and batch sizes.
-
-### Parameters
-
-- input: The input tensor
-- dim: The dimension of reduction
-
-### Returns
-
-- A tensor with the sum.
-
-### Example
-
-```python
-  import torch
-  import bitexact
-  x = torch.randn(32, 128, device='cuda')
-  bit_sum = bitexact.sum(x, dim=-1)
-```
-
-### Notes
-
-- Determinism is only verified on a handful of random seeds (10/29/2025)
-- Does not allocate host-side memory
-
 ## Mean
-
-### Function
-
-```python
-mean(input: torch.Tensor, dim: int = -1) -> torch.Tensor
-```
-
-### Description
-
-Calculates the mean of a tensor in a deterministic batch-invariant manner. Implements fixed order reduction to ensure bit-identical results across runs, GPUs, and batch sizes.
-
-### Parameters
-
-- input: the input tensor
-- dim: the dimension to reduce along
-
-### Returns
-
-- A tensor containing the mean
-
-### Example
-
-```python
-import torch
-import bitexact
-x = torch.randn(32, 128, device='cuda')
-bitexact.mean(x, dim=-1)
-```
-
-### Notes
-
-- Determinism is only verified on a handful of random seeds (10/29/2025)
-- Does not allocate host-side memory
 
 ## Max
 
 ## Min
 
 ## Sigmoid
-
-### Function
-
-```python
-sigmoid(input: torch.Tensor) -> torch.Tensor
-```
-
-### Description
-
-Calculates the sigmoid activation of a tensor in a deterministic manner. Sigmoid not perform reductions, uses IEEE expf conventions.
-
-### Parameters
-
-- input: the input tensor
-
-### Returns
-
-- a tensor containing the sigmoid activations
-
-### Example
-
-```python
-import torch
-import bitexact
-x = torch.randn(4096, device="cuda", dtype=torch.float32)
-bitexact.sigmoid(x)
-```
-
-### Notes
-
-- Determinism is only verified on a handful of random seeds (10/29/2025)
-- Does not allocate host-side memory
-
-## Softmax

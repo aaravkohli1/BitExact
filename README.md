@@ -33,7 +33,6 @@ BitExact is particularly suited for:
 | Reductions     | Max                   | [Max](./docs/api.md#max)           |
 | Reductions     | Min                   | [Min](./docs/api.md#min)           |
 | Activations    | Sigmoid               | [Sigmoid](./docs/api.md#sigmoid)   |
-| Activations    | Softmax               | [Softmax](./docs/api.md#softmax)   |
 
 > _More Determinsitic Kernels Coming Soon_
 
@@ -62,22 +61,26 @@ pip install bitexact
 
 # Performance at a Glance
 
-| Operation             | Throughput (vs PyTorch) | Notes                            |
-| --------------------- | ----------------------- | -------------------------------- |
-| Matrix Multiplication | 7.5x faster on average  | [MatMul](./docs/api.md#matmul)   |
-| RMS Normalziation     | tbd                     | [RmsNorm](./docs/api.md#rmsnorm) |
-| Sum                   |                         | [Sum](./docs/api.md#sum)         |
-| Mean                  |                         | [Mean](./docs/api.md#mean)       |
-| Sigmoid               |                         | [Sigmoid](./docs/api.md#sigmoid) |
+| Operation             | Throughput (vs PyTorch) | Notes                              |
+| --------------------- | ----------------------- | ---------------------------------- |
+| Matrix Multiplication | 7.5x faster on average  | [MatMul](./docs/api.md#matmul)     |
+| RMS Normalziation     | tbd                     | [RmsNorm](./docs/api.md#rmsnorm)   |
+| Layer Normalziation   | tbd                     | [LayerNorm](./docs/api.md#rmsnorm) |
+| Sum                   |                         | [Sum](./docs/api.md#sum)           |
+| Mean                  |                         | [Mean](./docs/api.md#mean)         |
+| Max                   |                         | [Mean](./docs/api.md#max)          |
+| Min                   |                         | [Mean](./docs/api.md#min)          |
+| Variance              |                         | [Var](./docs/api.md#var)           |
+| Sigmoid               |                         | [Sigmoid](./docs/api.md#sigmoid)   |
 
 > _(Benchmarked on NVIDIA GeForce RTX 4060 Ti, PyTorch 2.6.0, CUDA 12.5)_
 
 # Contributions
 
-Contributions are welcome!
+Contributions are welcome! If you have an idea for a Kernel, feel free to implement it (the largest missing one is attention).
 
 Please ensure new kernels:
 
-1. Pass Deterministic equality tests across 1000 or more runs (see [Test Suite](./setup.py)).
+1. Pass Deterministic equality tests (see [Testing](./test_determinism.py)).
 2. Use Warp-synchronous, non-atomic reduction patterns.
 3. Includes both .cu and .cuh files and a corresponding test.

@@ -1,7 +1,7 @@
 from bitexact import _C
 import torch
 
-def rms_norm(input: torch.Tensor, weight: torch.Tensor, eps=1e-6) -> torch.Tensor:
+def rms_norm(input: torch.Tensor, weight: torch.Tensor, eps: float=1e-6) -> torch.Tensor:
     """Batch Invariant RMS Norm"""
     return _C.rms_norm(input, weight, eps)
 
