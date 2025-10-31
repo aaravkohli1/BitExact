@@ -19,7 +19,8 @@ BitExact is particularly suited for:
 - [Design Reference ✏️](./docs/design.md)
 - [Performance Reference 💨](#performance-at-a-glance)
 - [Testing 🧪](./docs/testing.md)
-- [Contributing 💡](#contributing)
+- [Contributing 💡](#contributions)
+- [Acknowledgements 🔍](#acknowledgements)
 
 # Current Features
 
@@ -85,3 +86,9 @@ Please ensure new kernels:
 1. Pass Deterministic equality tests (see [Testing](./test_determinism.py)).
 2. Use Warp-synchronous, non-atomic reduction patterns.
 3. Includes both .cu and .cuh files and a corresponding test.
+
+### Acknowledgements
+
+This project draws inspiration from research by [Thinking Machines Lab](https://thinkingmachines.ai/)
+on deterministic GPU computation and reproducible deep learning.
+Their exploration of bit-exact kernels and floating-point determinism informed the design philosophy of BitExact.
