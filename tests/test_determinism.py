@@ -101,3 +101,17 @@ def test_var():
     torch_var = x.var(dim=-1, keepdim=True, unbiased=False)
     assert torch.allclose(bit_var, torch_var, atol=1e-5)
 
+def test_sigmoid():
+    x = torch.linspace(-10, 10, steps=1000, dtype=torch.float32)
+    ref = torch.sigmoid(x)
+    out1 = bitexact.sigmoid(x)
+    out2 = bitexact.sigmoid(x.clone())
+    extremes = torch.tensor([-100.0, 0.0, 100.0], dtype=torch.float32)
+    extreme_out = bitexact.sigmoid(extremes)
+
+    assert out1.shape == ref.shape
+    assert out1.dtype == ref.dtype
+    assert torch.allclose(out1, ref, atol=0, rtol=0)
+    assert torch.equal(out1, out2)
+    assert extreme_out[0] < 1e-4 and extreme_out[-1] > 1 - 1e-4
+
