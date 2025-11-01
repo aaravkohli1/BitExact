@@ -116,7 +116,18 @@ BitExact includes deterministic equality tests for all kernels.
 Run the full test suite with:
 
 ```bash
-pytest tests/ -v
+pytest tests/
+```
+
+**Recommended Flags**
+
+`-v` - Verbose flag (shows results of each individual test)
+`-s` - Don’t capture output (allows print statements from conftest)
+
+Example:
+
+```bash
+pytest tests/ -v -s
 ```
 
 Because many tests utilize randomized tensors, running the suite multiple times can help verify reproducibility and numerical stability. You can run the tests any number of times, the examples below simply use 3 as a placeholder.
@@ -222,7 +233,9 @@ Please ensure new kernels:
 
 # Project Status
 
-This was my first time writing CUDA kernels, and sort of a quick weekend experiment to understand deterministic GPU computation. BitExact works reliably for all implemented operations, but it’s mostly a one-off research project rather than an actively maintained library.
+This was my first time writing CUDA kernels, and sort of a quick reading week experiment to understand deterministic GPU computation. BitExact works reliably for all implemented operations, but it’s mostly a one-off research project rather than an actively maintained library.
+
+There are many ways the library could be expanded, outlined in the [design document](./docs/design.md), which I may work on in the future.
 
 ### Acknowledgements
 
