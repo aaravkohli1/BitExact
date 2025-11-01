@@ -238,7 +238,7 @@ Please ensure new kernels:
 
 # Project Status
 
-This was my first time writing CUDA kernels, and sort of a quick reading week experiment to understand deterministic GPU computation. BitExact works reliably for all implemented operations, but it’s mostly a one-off research project rather than an actively maintained library.
+This was my first time writing CUDA kernels, and sort of a quick three day experiment to understand deterministic GPU computation. BitExact works reliably for all implemented operations, but it’s mostly a one-off research project rather than an actively maintained library.
 
 There are many ways the library could be expanded, outlined in the [design document](./docs/design.md), which I may work on in the future.
 
