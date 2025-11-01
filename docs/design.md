@@ -22,21 +22,24 @@ In addition to this, BitExact is implemented in a modular architecture, allowing
 
 BitExact's architecture is guided by a few principles ensuring bit exact determinism without sacrificing maintainabillity or clarity.
 
-### 2.1 Fixed Order Arithmetic
+### Fixed Order Arithmetic
 
 All reductions and accumulations are implemented using fixed order traversals, therefore ensuring determinism across runs, threads, and blocks. This eliminates nondeterminism introduced by thread scheduling, warp-level divergence, or floating-point non-associativity. This is highlighted more in the individual kernel sections.
 
-### 2.2 Warp-Synchronous Reductions
+### Warp-Synchronous Reductions
 
 To minimize thread synchronization and memory usage, warp-synchronous reductions are heavily utilized in BitExact's kernels. A warp is simply a collection of 32 threads that execute instructions in lockstep within a single GPU core. By restricting reductions to operate within a warp, BitExact avoids global or block wide synchronization instructions that slow down kernel execution. In essence, synchronizing 32 threads in a warp is far more effecient than coordinating hundreds of threads across an entire block.
 
-### 2.3 No Atomics or Race Conditions
+### No Atomics or Race Conditions
 
 BitExact explicitly avoids atomic additions, unordered shared memory operations and any operation that depends on execution timing. Timing variability is a fundamental source of inconsistency in parallel computing programs - making strict reductions and memory operations essential for determinism.
 
-### 2.4 Consistent Precision and Rounding
+### Consistent Precision and Rounding
 
-### 2.5 Deterministic Memory Access
+All kernels operate in FP32 by default, using CUDA compiler flags (`--fmad=false`, `--prec-div=true`, `--prec-sqrt=true`) to disable hardware-level instruction fusion that could alter arithmetic order or precision.
+This ensures that identical inputs always produce identical binary outputs.
+
+### Deterministic Memory Access
 
 All global and shared-memory reads/writes are performed using contiguous, coalesced access patterns with explicitly defined traversal order. This minimizes hidden nondeterminism from caching, bank conflicts, or compiler-driven memory optimizations.
 
