@@ -82,18 +82,18 @@ pip install bitexact
 
 # Performance at a Glance
 
-| Operation             | Throughput (vs PyTorch) | Notes                                                                                 |
-| --------------------- | ----------------------- | ------------------------------------------------------------------------------------- |
-| Matrix Multiplication | 0.47x                   | Slower than cuBLAS; PyTorch’s highly tuned GEMM outperforms deterministic reduction.  |
-| RMS Normalization     | 5.09x                   | Fused mean, sqrt, and scaling operations reduce kernel launches and memory access.    |
-| Layer Normalization   | 1.66x                   | Single-pass population variance computation yields faster execution on small tensors. |
-| Sum                   | 1.98x                   | Optimized shared-memory reduction with fixed traversal order for determinism.         |
-| Mean                  | 1.69x                   | Builds on the Sum kernel with deterministic normalization by element count.           |
-| Max                   | 1.75x                   | Deterministic warp-level reduction; avoids divergent branching used in PyTorch.       |
-| Min                   | 1.98x                   | Similar to Max; uses unified deterministic traversal for all elements.                |
-| Variance              | 1.35x                   | Uses fused E[x²] - (E[x])² formulation with deterministic accumulation.               |
-| Sigmoid               | 0.92x                   | Identical arithmetic to PyTorch; near-equal performance and perfect bit equivalence.  |
-| **Average**           | **1.88x**               | Tests performed on small-scale tensors; PyTorch is optimized for large batch sizes.   |
+| Operation             | Throughput (vs PyTorch) | Notes                                                                                          |
+| --------------------- | ----------------------- | ---------------------------------------------------------------------------------------------- |
+| Matrix Multiplication | 0.47x                   | Slower than cuBLAS; PyTorch’s highly tuned GEMM outperforms deterministic reduction.           |
+| RMS Normalization     | 5.09x                   | Fused mean, sqrt, and scaling operations reduce kernel launches and memory access.             |
+| Layer Normalization   | 1.66x                   | Fused single-kernel variance reduces global memory passes and improves speed on small tensors. |
+| Sum                   | 1.98x                   | Optimized shared-memory reduction with fixed traversal order for determinism.                  |
+| Mean                  | 1.69x                   | Builds on the Sum kernel with deterministic normalization by element count.                    |
+| Max                   | 1.75x                   | Deterministic warp-level reduction; avoids divergent branching used in PyTorch.                |
+| Min                   | 1.98x                   | Similar to Max; uses unified deterministic traversal for all elements.                         |
+| Variance              | 1.35x                   | Uses fused E[x²] - (E[x])² formulation with deterministic accumulation.                        |
+| Sigmoid               | 0.92x                   | Identical arithmetic to PyTorch; near-equal performance and perfect bit equivalence.           |
+| **Average**           | **1.88x**               | Tests performed on small-scale tensors; PyTorch is optimized for large batch sizes.            |
 
 > _(Benchmarked on NVIDIA GeForce RTX 4060 Ti, PyTorch 2.6.0, CUDA 12.5)_
 
