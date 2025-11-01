@@ -89,12 +89,42 @@ You are not feel limited to the current sub folders that exist within `src/ops`,
 
 Reduction operations are some of the most common sources of nondeterminism in GPU computation. Traditional GPU reductions rely on atomic operations, or thread-level accumulation patterns that vary in execution between runs. This occurs due to timing invariance on a run-to-run basis. In addition, floating point arithmetic in GPUs is inherently non-associative. This is to say $(a + b) + c \neq a + (b + c)$. This makes fixed order reduction and accumulation order essential for determinsitic GPU kernels.
 
-BitExact addresses this performing warp-synchronous, and tree style reductions across its kernels, where the order of pairwise summations is explicitly defined and identical on a run-to-run basis. This pattern eliminates race conditions and ensures reproducible patial sums in arithmetic accumulation.
+BitExact addresses this performing warp-synchronous, and tree style reductions across its kernels, where the order of pairwise summations is explicitly defined and identical on a run-to-run basis. This pattern eliminates race conditions and ensures reproducible patial sums in arithmetic accumulation. (See Figure 1)
+
+Each reduction kernel is further optimized to minimize global memory operations and shared-memory usage, enabling both deterministic and efficient computation. Together, these methods guarantee that BitExact’s reduction outputs remain identical across runs, devices, and driver versions
 
 ![Deterministic Tree Reduction Diagram](./assets/tree_reduction.png)
 _Figure 1. Warp-synchronous tree-style reduction ensuring fixed accumulation order._
 
 ## 5. Layer Normalization
+
+Layer Normalization (LayerNorm) provides feature-wise normalization by centering and scaling activations across each sample’s hidden dimension. In non-deterministic GPU implementations, this step can produce subtle numerical drift due to unordered summation and variance calculations across threads. BitExact eliminates that drift through fixed-order reductions and fused computation.
+
+The kernel operates in four stages:
+
+1. Deterministic Mean and Variance
+
+   The mean and variance for each batch element are computed using BitExact’s deterministic reduction kernels, which employ warp-synchronous, tree-style accumulation to ensure fixed arithmetic order.
+   This guarantees reproducibility across executions and hardware configurations.
+
+2. Normalization and Affine Transform
+
+In a single fused pass:
+
+- Each thread block handles one batch element
+- The mean and variance are brodcast from the reduction stage
+- A precomputed inverse standard deviation deterministically scales inputs
+
+3. Vectorized Memory Access
+
+To maximize throughput, operations are vectorized using `float4` loads and stores, reducing global memory transactions by a factor of 4.
+
+4. Precision and Synchronization
+
+All operations are performed in FP32, with no atomic operations or asynchronous accumulation. The kernel executes per-batch independently, ensuring that no inter-block timing affects numerical outcomes.
+
+**Result**
+This design yields a bit-exact LayerNorm that matches PyTorch’s functional output while guaranteeing reproducibility.
 
 ## 6. Deterministic MatMul
 
