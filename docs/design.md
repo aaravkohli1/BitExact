@@ -57,7 +57,42 @@ All global and shared-memory reads/writes are performed using contiguous, coales
 
 ## 3. System Architecture
 
+BitExact follows a layered architecture designed for modularity, clarity, and testability. Each layer is deterministic in behaviour, while remaining decoupled from higher-level abstractions. At a high level, the system architecture can be broken down into four main components.
+
+### Python Interface
+
+The public interface exposed to users, and integrated with PyTorch. Each operation is defined in `__init__.py`and calls the corresponding CUDA function from `_C`. This layer handles user facing documentation, and argument validation.
+
+### c++ Bindings
+
+This layer is what connects the CUDA kernels to the Python interface. It registers all CUDA Kernels as callable PyTorch extensions through the `PYBIND11_MODULE`. Each function recieves a `torch.Tensor` object, validates the representation invariants, and dispatches execution to the appropriate CUDA Kernel.
+
+### CUDA Kernels
+
+The CUDA kernels are the source of BitExact. Each operation is implemented as a seperate CUDA file (`.cu` and `.cuh`) in a folder by the kernels category. These kernels implement fixed-order arithmetic traversal, warp-synchronous reductions, and strict precision control to guarantee deterministic results.
+
+### Testing and Benchmarking
+
+The testing and benchmarking sections of the architecture are necessary for validating kernel correctness and effeciency. They can be found in the `bitexact/benchmarks` folder, and `bitexact/tests` folder respectively. These layers ensure that determinism is verified quantitatively, and not just by inspection.
+
+### New Kernels
+
+To register a new kernel:
+
+- Implement the kernel in its respective category within `src/ops` (Must include `.cu` and `.cuh` files - keep kernels fused)
+- Register the kernel within `setup.py`, `__init__.py`, and `bindings.cpp`
+- Implement testing and benchmarking functions in `tests/test_determinism.py`, and `benchmarks/benchmark.py` respectively.
+
+You are not feel limited to the current sub folders that exist within `src/ops`, but please keep novel kernels within their respective modules when possible to maintain consistent project structure.
+
 ## 4. Deterministic Reduction Operations
+
+Reduction operations are some of the most common sources of nondeterminism in GPU computation. Traditional GPU reductions rely on atomic operations, or thread-level accumulation patterns that vary in execution between runs. This occurs due to timing invariance on a run-to-run basis. In addition, floating point arithmetic in GPUs is inherently non-associative. This is to say $(a + b) + c \neq a + (b + c)$. This makes fixed order reduction and accumulation order essential for determinsitic GPU kernels.
+
+BitExact addresses this performing warp-synchronous, and tree style reductions across its kernels, where the order of pairwise summations is explicitly defined and identical on a run-to-run basis. This pattern eliminates race conditions and ensures reproducible patial sums in arithmetic accumulation.
+
+![Deterministic Tree Reduction Diagram](./assets/tree_reduction.png)
+_Figure 1. Warp-synchronous tree-style reduction ensuring fixed accumulation order._
 
 ## 5. Layer Normalization
 
