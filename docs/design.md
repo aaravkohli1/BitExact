@@ -1,5 +1,17 @@
 # BitExact Design Document
 
+- [Why Determinism](#0-why-determinism)
+- [Overview](#1-overview)
+- [Design Principles](#2-design-principles)
+- [System Architecture](#3-system-architecture)
+- [Deterministic Reduction](#4-deterministic-reduction-operations)
+- [Layer Normalization](#5-layer-normalization)
+- [Deterministic MatMul](#6-deterministic-matmul)
+- [Root Mean Square Layer Normalization](#7-root-mean-square-layer-normalzation)
+- [Memory and Precision](#8-memory-and-precision)
+- [Testing and Validation](#9-testing-and-validation)
+- [Future Work](#10-future-work)
+
 ## 0. Why Determinism?
 
 Reproducibillity is essential for research and scientific progress. In modern machine learning, achieving reproducibillity is increasingly difficult due to inherent non-determinism in modern GPUs. Floating point arithmetic on GPUs is non-associative by nature, meaning that small changes in arithmetic order can lead to noticable output inconsistencies. These discrepancies compound in deep learning models, making it hard to verify whether differences in results arise from architecture changes, initialization, or simple numerical noise.
