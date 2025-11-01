@@ -131,6 +131,7 @@ This design yields a bit-exact LayerNorm that matches PyTorch’s functional out
 Matrix multiplication is one of the most performance critical operations in deep learning, while also being susceptible to nondeterministic behaviour. BitExact's MatMul kernel is designed as follows:
 
 1. Fixed Tiling Pattern
+
    Each CUDA block computes a 32x32 tile of the output. The tiling strategy is static, both thread and memory mapping remain identical between runs batch sizes ensuring consistent accumulation order.
 
 2. Thread Work Assignment
@@ -138,12 +139,15 @@ Matrix multiplication is one of the most performance critical operations in deep
 Each thread is assigned a 2x2 output sub-tile. Thread indices `(tx, ty)` are derived deteministically from `threadIdx.x` forming a 16x16 layout per block.
 
 3. Shared Memory Tiles
+
    Input tiles A and B are cooperatively loaded into memory with boundary checks for partial tiles. Out-of-range elements are zero-padded removing any undefined memory reads.
 
 4. Deterministic Accumulation
+
    Each thread maintains its 2x2 accumulator in registers, and the loop does not contain atomics or unrolled reductions.
 
 5. Memory Write Back
+
    Results are written back in a deterministic order with explicit bounds checks to handle incomplete tiles at the matrix edges.
 
 **Result**: A small sacrifice in throughput compared to cuBLAS's GEMM, but a strictly reproducible kernel.
