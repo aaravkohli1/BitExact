@@ -121,8 +121,8 @@ pytest tests/
 
 **Recommended Flags**
 
-`-v` - Verbose flag (shows results of each individual test)
-`-s` - Don’t capture output (allows print statements from conftest)
+- `-v` - Verbose flag (shows results of each individual test)
+- `-s` - Don’t capture output (allows print statements from conftest)
 
 Example:
 
