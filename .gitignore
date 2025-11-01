@@ -3,7 +3,6 @@ build/
 dist/
 *.egg-info/
 .bitexact.egg-info/
-__pycache__/
 
 # Compiled binaries
 *.so
