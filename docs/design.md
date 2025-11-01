@@ -136,7 +136,7 @@ Matrix multiplication is one of the most performance critical operations in deep
 
 2. Thread Work Assignment
 
-Each thread is assigned a 2x2 output sub-tile. Thread indices `(tx, ty)` are derived deteministically from `threadIdx.x` forming a 16x16 layout per block.
+   Each thread is assigned a 2x2 output sub-tile. Thread indices `(tx, ty)` are derived deteministically from `threadIdx.x` forming a 16x16 layout per block.
 
 3. Shared Memory Tiles
 
