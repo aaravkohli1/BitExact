@@ -106,7 +106,7 @@ BitExact’s performance advantage comes primarily from kernel fusion and determ
 To see how BitExact benchmarks on your machine, run:
 
 ```bash
-python -m benchmarks.benchmark
+python benchmarks/benchmark.py
 ```
 
 # Testing
