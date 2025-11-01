@@ -146,8 +146,8 @@ for ($i = 1; $i -le 3; $i++) { pytest -v }
 
 **Troubleshooting**
 
-- **CUDA OOM**: close other GPU workloads, then re-run. Cache is auto-cleared; if needed, re-run with `-s` to confirm setup logs.
-- **No GPU**: tests require a CUDA-capable device; CPU fallbacks are not provided.
+- CUDA OOM: close other GPU workloads, then re-run. Cache is auto-cleared; if needed, re-run with `-s` to confirm setup logs.
+- No GPU: tests require a CUDA-capable device; CPU fallbacks are not provided.
 
 > _All tests verify bit-exact equivalence to PyTorch’s reference implementations and ensure reproducibility across multiple runs and devices._
 
