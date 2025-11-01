@@ -2,19 +2,53 @@
 
 ## 0. Why Determinism?
 
+Reproducibillity is essential for research and scientific progress. In modern machine learning, achieving reproducibillity is increasingly difficult due to inherent non-determinism in modern GPUs. Floating point arithmetic on GPUs is non-associative by nature, meaning that small changes in arithmetic order can lead to noticable output inconsistencies. These discrepancies compound in deep learning models, making it hard to verify whether differences in results arise from architecture changes, initialization, or simple numerical noise.
+
+Determinism addresses this by enforcing fixed order arithmetic and reduction regardless of hardware, batchsize, devices, and drivers. By eliminating numerical invariance, researches can isolate effects of architectural or algorithmic changes, therefore enabling cleaner experiments, definitive ablation studies, and verifiable baselines.
+
+BitExact was developed for this exact purpose; to provide a library that enforces fixed order reduction and reproducible inference. If two runs use the same inputs, they will produce the bit identical outputs on BitExact's kernels. This principle turns determinism into a dependable scientific tool, rather than a convinient debugging model.
+
 ## 1. Overview
 
+BitExact is a research driven CUDA library, focused on bit level reproducibillity in deep learning. It provides deterministic implementations of core tensor operations such as normalization, matrix multiplication, and reduction, ensuring that runs yield bit identical results across devices, architectures, drivers, and batches.
+
+The library is designed as a plug-and-play supplement to PyTorch, enabling developers and researches to make their models deterministic without modifying model architecture or code. Each kernel is implemented with fixed order arithmetic traversal order, warp-synchronous reductions, and strict rounding error control, thereby removing common sources of non-determinism commonly introduced by parallel reduction patterns and thread scheduling.
+
+BitExact is not meant to be outperform highly optimized vendor kernels (like CuBLAS). It was solely developed to establish a deterministic computational baseline for model evaluation, reproducibility research, and numerical verification. While the development of BitExact was not inherently performance based, many optimizations have been made to the kernels to reduce memory operations use warp-synchronous reductions, and fuse common arithmetic stages, thereby offering competitive or superior performance on small to medium tensors in initial testing. These results were not the goal of the project but highlight that determinism and efficiency are not mutually exclusive when kernel design is carefully controlled.
+
+In addition to this, BitExact is implemented in a modular architecture, allowing each kernel to be benchmarked, tested, and improved independently therefore making the library extensible for further kernel development.
+
 ## 2. Design Principles
+
+BitExact's architecture is guided by a few principles ensuring bit exact determinism without sacrificing maintainabillity or clarity.
+
+### 2.1 Fixed Order Arithmetic
+
+All reductions and accumulations are implemented using fixed order traversals, therefore ensuring determinism across runs, threads, and blocks. This eliminates nondeterminism introduced by thread scheduling, warp-level divergence, or floating-point non-associativity. This is highlighted more in the individual kernel sections.
+
+### 2.2 Warp-Synchronous Reductions
+
+To minimize thread synchronization and memory usage, warp-synchronous reductions are heavily utilized in BitExact's kernels. A warp is simply a collection of 32 threads that execute instructions in lockstep within a single GPU core. By restricting reductions to operate within a warp, BitExact avoids global or block wide synchronization instructions that slow down kernel execution. In essence, synchronizing 32 threads in a warp is far more effecient than coordinating hundreds of threads across an entire block.
+
+### 2.3 No Atomics or Race Conditions
+
+BitExact explicitly avoids atomic additions, unordered shared memory operations and any operation that depends on execution timing. Timing variability is a fundamental source of inconsistency in parallel computing programs - making strict reductions and memory operations essential for determinism.
+
+### 2.4 Consistent Precision and Rounding
+
+### 2.5 Deterministic Memory Access
+
+All global and shared-memory reads/writes are performed using contiguous, coalesced access patterns with explicitly defined traversal order. This minimizes hidden nondeterminism from caching, bank conflicts, or compiler-driven memory optimizations.
 
 ## 3. System Architecture
 
 ## 4. Deterministic Reduction Operations
 
-## 5. LayerNorm
+## 5. Layer Normalization
 
 ## 6. Deterministic MatMul
 
-## 7. RMSNorm
+## 7. Root Mean Square Layer Normalzation
 
 ## 8. Memory and Precision
 
