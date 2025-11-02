@@ -122,7 +122,7 @@ pytest tests/
 **Recommended Flags**
 
 - `-v` - Verbose flag (shows results of each individual test)
-- `-s` - Don’t capture output (allows print statements from conftest)
+- `-s` - Don’t capture output (allows setup logs from [conftest.py](./tests/conftest.py))
 
 Example:
 
