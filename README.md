@@ -111,7 +111,7 @@ python benchmarks/benchmark.py
 
 Example Output
 
-```powershell
+```bash
 BitExact vs PyTorch - Benchmark Suite
 
 Operation      Torch (ms)  BitExact (ms)      Speed     Max Diff    Match
