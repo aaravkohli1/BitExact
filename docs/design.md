@@ -102,12 +102,12 @@ Layer Normalization (LayerNorm) provides feature-wise normalization by centering
 
 The kernel operates in four stages:
 
-1. Deterministic Mean and Variance
+**Deterministic Mean and Variance**
 
-   The mean and variance for each batch element are computed using BitExact’s deterministic reduction kernels, which employ warp-synchronous, tree-style accumulation to ensure fixed arithmetic order.
-   This guarantees reproducibility across executions and hardware configurations.
+The mean and variance for each batch element are computed using BitExact’s deterministic reduction kernels, which employ warp-synchronous, tree-style accumulation to ensure fixed arithmetic order.
+This guarantees reproducibility across executions and hardware configurations.
 
-2. Normalization and Affine Transform
+**Normalization and Affine Transform**
 
 In a single fused pass:
 
@@ -115,13 +115,13 @@ In a single fused pass:
 - The mean and variance are brodcast from the reduction stage
 - A precomputed inverse standard deviation deterministically scales inputs
 
-3. Vectorized Memory Access
+**Vectorized Memory Access**
 
-   To maximize throughput, operations are vectorized using `float4` loads and stores, reducing global memory transactions by a factor of 4.
+To maximize throughput, operations are vectorized using `float4` loads and stores, reducing global memory transactions by a factor of 4.
 
-4. Precision and Synchronization
+**Precision and Synchronization**
 
-   All operations are performed in FP32, with no atomic operations or asynchronous accumulation. The kernel executes per-batch independently, ensuring that no inter-block timing affects numerical outcomes.
+All operations are performed in FP32, with no atomic operations or asynchronous accumulation. The kernel executes per-batch independently, ensuring that no inter-block timing affects numerical outcomes.
 
 **Result**
 This design yields a bit-exact LayerNorm that matches PyTorch’s functional output while guaranteeing reproducibility.
@@ -130,25 +130,25 @@ This design yields a bit-exact LayerNorm that matches PyTorch’s functional out
 
 Matrix multiplication is one of the most performance critical operations in deep learning, while also being susceptible to nondeterministic behaviour. BitExact's MatMul kernel is designed as follows:
 
-1. Fixed Tiling Pattern
+**Fixed Tiling Pattern**
 
-   Each CUDA block computes a 32x32 tile of the output. The tiling strategy is static, both thread and memory mapping remain identical between runs batch sizes ensuring consistent accumulation order.
+Each CUDA block computes a 32x32 tile of the output. The tiling strategy is static, both thread and memory mapping remain identical between runs batch sizes ensuring consistent accumulation order.
 
-2. Thread Work Assignment
+**Thread Work Assignment**
 
-   Each thread is assigned a 2x2 output sub-tile. Thread indices `(tx, ty)` are derived deteministically from `threadIdx.x` forming a 16x16 layout per block.
+Each thread is assigned a 2x2 output sub-tile. Thread indices `(tx, ty)` are derived deteministically from `threadIdx.x` forming a 16x16 layout per block.
 
-3. Shared Memory Tiles
+\*\*Shared Memory Tiles
 
-   Input tiles A and B are cooperatively loaded into memory with boundary checks for partial tiles. Out-of-range elements are zero-padded removing any undefined memory reads.
+Input tiles A and B are cooperatively loaded into memory with boundary checks for partial tiles. Out-of-range elements are zero-padded removing any undefined memory reads.
 
-4. Deterministic Accumulation
+**Deterministic Accumulation**
 
-   Each thread maintains its 2x2 accumulator in registers, and the loop does not contain atomics or unrolled reductions.
+Each thread maintains its 2x2 accumulator in registers, and the loop does not contain atomics or unrolled reductions.
 
-5. Memory Write Back
+**Memory Write Back**
 
-   Results are written back in a deterministic order with explicit bounds checks to handle incomplete tiles at the matrix edges.
+Results are written back in a deterministic order with explicit bounds checks to handle incomplete tiles at the matrix edges.
 
 **Result**: A small sacrifice in throughput compared to cuBLAS's GEMM, but a strictly reproducible kernel.
 
