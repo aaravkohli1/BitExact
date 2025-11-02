@@ -63,7 +63,7 @@ BitExact follows a layered architecture designed for modularity, clarity, and te
 
 The public interface exposed to users, and integrated with PyTorch. Each operation is defined in `__init__.py`and calls the corresponding CUDA function from `_C`. This layer handles user facing documentation, and argument validation.
 
-### c++ Bindings
+### C++ Bindings
 
 This layer is what connects the CUDA kernels to the Python interface. It registers all CUDA Kernels as callable PyTorch extensions through the `PYBIND11_MODULE`. Each function recieves a `torch.Tensor` object, validates the representation invariants, and dispatches execution to the appropriate CUDA Kernel.
 
@@ -117,11 +117,11 @@ In a single fused pass:
 
 3. Vectorized Memory Access
 
-To maximize throughput, operations are vectorized using `float4` loads and stores, reducing global memory transactions by a factor of 4.
+   To maximize throughput, operations are vectorized using `float4` loads and stores, reducing global memory transactions by a factor of 4.
 
 4. Precision and Synchronization
 
-All operations are performed in FP32, with no atomic operations or asynchronous accumulation. The kernel executes per-batch independently, ensuring that no inter-block timing affects numerical outcomes.
+   All operations are performed in FP32, with no atomic operations or asynchronous accumulation. The kernel executes per-batch independently, ensuring that no inter-block timing affects numerical outcomes.
 
 **Result**
 This design yields a bit-exact LayerNorm that matches PyTorch’s functional output while guaranteeing reproducibility.
@@ -154,9 +154,31 @@ Matrix multiplication is one of the most performance critical operations in deep
 
 ## 7. Root Mean Square Layer Normalzation
 
+RMSNorm simplifies the LayerNorm operation by not mean-centering, and normalizing only by the root mean square of the activations. This makes the operation both faster and more numerically stable. The operation is implemented as a fused CUDA kernel that:
+
+- Computes sum by warp-synchronous reduction
+- Divides the feature count and applies the square root (Currently FP32)
+- Multiplies the normalized output by the learned weight vector (vectorized in float4 for memory effeciency)
+
+RMSNorm extends the deterministic reduction logic of LayerNorm using identical accumulation and traversal order. The absence of mean subtraction elimations additional synchronization therefore increasing kernel throughput (especially on smaller tensors). This makes it ideal for architectures like transformers and diffusion models.
+
 ## 8. Memory and Precision
 
+At the moment, all BitExact kernels use FP32 precision. To prevent compiler level instruction reordering, the `-fmad=false` flag disable fused multiply-add (FMA) optimizations, ensuring consistent rounding across arithmetic operations.
+
+Key precision techniques for BitExact are:
+
+- No atomic operations: atomic operations can introduce non-associativity
+- Determinisitc Shared memory Access: Avoids race conditions across warps
+- Consistent alignment: all vectorized operations are 16-byte aligigned to maintain predictable memory coalescing
+
 ## 9. Testing and Validation
+
+Every BitExact kernel undergoes deterministic equality testing to confirm bitwise reproducibility. The [test suite](../tests/test_determinism.py) verifies that the output of each kernel is bit identical across runs on a given device, and that it matches PyTorch's functional results within a strict tolerance.
+
+[Benchmark tests](../benchmarks/benchmark.py) compare BitExact's kernels against PyTorch's implementations, reporting relative throughput. Please note that library was created individually with limited computational testing resources. As such, benchmark results should be interpreted as approximate performance indicators on small tensors, not rigorous scientific measurements.
+
+While BitExact achieves competitive output on small tensors in preliminary testing, it is not designed to outperform highly optimized industry standard kernels (ie cuBLAS, cuDNN). Its primary purpose is to provide a deterministic computational baseline for research, evaluation, and reproducibility testing.
 
 ## 10. Future Work
 
