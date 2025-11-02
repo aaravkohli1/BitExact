@@ -109,6 +109,24 @@ To see how BitExact benchmarks on your machine, run:
 python benchmarks/benchmark.py
 ```
 
+Example Output
+
+```powershell
+BitExact vs PyTorch - Benchmark Suite
+
+Operation      Torch (ms)  BitExact (ms)      Speed     Max Diff    Match
+-------------------------------------------------------------------------
+MatMul             0.0290         0.0614      0.47x     9.92e-05     True
+Sum                0.0083         0.0081      1.02x     1.14e-05     True
+Mean               0.0086         0.0082      1.06x     1.12e-08     True
+Max                0.0086         0.0076      1.13x     0.00e+00     True
+Min                0.0089         0.0076      1.16x     0.00e+00     True
+Sigmoid            0.0073         0.0074      0.98x     0.00e+00     True
+RMSNorm            0.0433         0.0084      5.13x     1.91e-06     True
+LayerNorm          0.0813         0.0504      1.61x     2.38e-06     True
+Variance           0.0323         0.0219      1.47x     2.38e-07     True
+```
+
 # Testing
 
 BitExact includes deterministic equality tests for all kernels.
