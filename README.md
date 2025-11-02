@@ -20,7 +20,7 @@ BitExact is particularly suited for:
 
 # Quick Links
 
-- [Quick Start](#quick-start-example)
+- [Quick Start 🚀](#quick-start-example)
 - [API Reference 📘](./docs/api.md)
 - [Design Reference ✏️](./docs/design.md)
 - [Performance Reference 💨](#performance-at-a-glance)
