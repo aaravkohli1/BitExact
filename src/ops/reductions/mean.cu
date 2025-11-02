@@ -17,6 +17,7 @@ __global__ void mean_kernel (
      int vec_size = hidden_dim / 4;
     float sum = 0.0f;
     
+    // Vectorize sum
     for(int i = threadIdx.x; i < vec_size; i += blockDim.x) {
         float4 vals = reinterpret_cast<const float4*>(x)[i];
         sum += vals.x;
@@ -25,10 +26,12 @@ __global__ void mean_kernel (
         sum += vals.w;
     }
 
+    // Remaining elements
     for(int i = vec_size * 4 + threadIdx.x; i < hidden_dim; i += blockDim.x){
         sum += x[i];
     }
 
+    // Warp reduce
     float warp_sum = warp_reduce_sum(sum);
 
     __shared__ float shared[8];  
@@ -49,7 +52,7 @@ __global__ void mean_kernel (
     }
     __syncthreads();
     if(threadIdx.x == 0) {
-        output[batch_idx] = shared[0] / hidden_dim;
+        output[batch_idx] = shared[0] / hidden_dim;    // divide by the number of elements
     }
 }
 

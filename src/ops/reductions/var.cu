@@ -20,6 +20,7 @@ __global__ void var_kernel(
     int vec_size = hidden_dim / 4;
     float sum = 0.0f;
     
+    // Vectorize 
     for(int i = threadIdx.x; i < vec_size; i += blockDim.x) {
         float4 vals = reinterpret_cast<const float4*>(x)[i];
         float diff_x = vals.x - mean;
@@ -33,11 +34,13 @@ __global__ void var_kernel(
         sum += diff_w * diff_w;
     }
 
+    // Remaining elements
     for(int i = vec_size * 4 + threadIdx.x; i < hidden_dim; i += blockDim.x){
         float diff = x[i] - mean;
         sum += diff * diff;
     }
 
+    // Warp reduce
     float warp_sum = warp_reduce_sum(sum);
     __shared__ float shared[8];  
     int lane = threadIdx.x % 32;

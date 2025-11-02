@@ -10,6 +10,7 @@ __global__ void sigmoid_kernel(
     int vec_idx = blockIdx.x * blockDim.x + threadIdx.x;
     int vec_size = n / 4;
     
+    // Vectorize computations with float4
     if (vec_idx < vec_size) {
         float4 vals = reinterpret_cast<const float4*>(input)[vec_idx];
         
@@ -22,6 +23,7 @@ __global__ void sigmoid_kernel(
         reinterpret_cast<float4*>(output)[vec_idx] = result;
     }
     
+    // Compute remaining elements
     int scalar_idx = vec_size * 4 + (blockIdx.x * blockDim.x + threadIdx.x);
     if (scalar_idx < n) {
         float x = input[scalar_idx];
@@ -29,6 +31,7 @@ __global__ void sigmoid_kernel(
     }
 }
 
+// Launch function
 void sigmoid_cuda(
     const float* input,
     float* output,

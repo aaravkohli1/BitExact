@@ -17,6 +17,7 @@ __global__ void min_kernel(
     int vec_size = hidden_dim / 4;
     float min_val = INFINITY;
     
+    // Vectorize min
     for(int i = threadIdx.x; i < vec_size; i += blockDim.x) {
         float4 vals = reinterpret_cast<const float4*>(x)[i];
         min_val = fminf(vals.x, min_val);
@@ -25,10 +26,12 @@ __global__ void min_kernel(
         min_val = fminf(vals.w, min_val);
     }
 
+    // Remaining elements
     for(int i = vec_size * 4 + threadIdx.x; i < hidden_dim; i += blockDim.x){
         min_val = fminf(min_val, x[i]);
     }
 
+    // Warp reduce
     float min= warp_reduce_min(min_val);
 
     __shared__ float shared[8];  

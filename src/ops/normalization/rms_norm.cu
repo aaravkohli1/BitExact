@@ -20,6 +20,7 @@ __global__ void rms_norm_kernel(
     int vec_size = hidden_dim / 4;
     float sum = 0.0f;
     
+    // Vectorize computation (squares)
     for(int i = threadIdx.x; i < vec_size; i += blockDim.x) {
         float4 vals = reinterpret_cast<const float4*>(x)[i];
         sum += vals.x * vals.x;
@@ -28,12 +29,13 @@ __global__ void rms_norm_kernel(
         sum += vals.w * vals.w;
     }
 
+    // Compute remaining elements
     for(int i = vec_size * 4 + threadIdx.x; i < hidden_dim; i += blockDim.x){
         float val = x[i];
         sum += val * val;
     }
 
-
+    // Warp synchronous reduction
     float warp_sum = warp_reduce_sum(sum);
 
     __shared__ float shared[8];  
@@ -56,6 +58,7 @@ __global__ void rms_norm_kernel(
 
     float rms_val = rsqrtf(shared[0] / hidden_dim + eps);
 
+    // Vectorize full computation
     for(int i = threadIdx.x; i < vec_size; i += blockDim.x) {
         float4 weight_vals = reinterpret_cast<const float4*>(weight)[i];
         float4 x_vals = reinterpret_cast<const float4*>(x)[i];
@@ -69,6 +72,7 @@ __global__ void rms_norm_kernel(
         reinterpret_cast<float4*>(y)[i] = y_vals;
     }
 
+    // Compute remaining elements
     for(int i = vec_size * 4 + threadIdx.x; i < hidden_dim; i += blockDim.x) {
         y[i] = x[i] * rms_val * weight[i];
     }

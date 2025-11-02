@@ -17,6 +17,7 @@ __global__ void max_kernel(
     int vec_size = hidden_dim / 4;
     float max_val = -INFINITY;
     
+    // Vectorize max vals
     for(int i = threadIdx.x; i < vec_size; i += blockDim.x) {
         float4 vals = reinterpret_cast<const float4*>(x)[i];
         max_val = fmaxf(vals.x, max_val);
@@ -25,10 +26,12 @@ __global__ void max_kernel(
         max_val = fmaxf(vals.w, max_val);
     }
 
+    // Compute remaining elements
     for(int i = vec_size * 4 + threadIdx.x; i < hidden_dim; i += blockDim.x){
         max_val = fmaxf(max_val, x[i]);
     }
 
+    // Warp reduce
     float warp_max= warp_reduce_max(max_val);
 
     __shared__ float shared[8];  
