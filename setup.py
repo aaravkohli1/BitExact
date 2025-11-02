@@ -24,6 +24,17 @@ setup(
                 'src',
                 torch.utils.cpp_extension.include_paths()[0],
             ],
+             extra_compile_args={
+                'cxx': ['-O3', '-std=c++17'],
+                'nvcc': [
+                    '-O3',
+                    '-std=c++17',
+                    '-lineinfo',
+                    '-Xptxas', '-O3',
+                    '-fmad=false',
+                    '-Xcompiler', '-Wall',
+                ],
+            },
         )
     ],
     cmdclass={'build_ext': BuildExtension}
