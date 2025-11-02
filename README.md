@@ -131,7 +131,13 @@ Variance           0.0323         0.0219      1.47x     2.38e-07     True
 
 BitExact includes deterministic equality tests for all kernels.
 
-Run the full test suite with:
+To run the test suite, ensure you have PyTest installed. To install PyTest, run:
+
+```bash
+pip install -U pytest
+```
+
+Then you can run the test suite with:
 
 ```bash
 pytest tests/

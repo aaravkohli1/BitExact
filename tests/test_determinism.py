@@ -3,6 +3,7 @@ import bitexact
 import pytest
 
 def test_matmul() -> None:
+    """Test matrix multiplication correctness and determinism"""
     torch.manual_seed(42)
     a = torch.randn(4, 8, device='cuda')
     b = torch.randn(8, 16, device='cuda')
@@ -21,6 +22,7 @@ def test_matmul() -> None:
 @pytest.mark.parametrize("shape", [(32, 128), (16, 64), (8, 256)])
 @pytest.mark.parametrize("seed", [42, 123, 456])
 def test_max(shape, seed):
+    """Test the max operation correctness and determinism"""
     torch.manual_seed(seed)
     x = torch.randn(shape, device='cuda')
     bit_max = bitexact.max(x, dim=-1)
@@ -34,6 +36,7 @@ def test_max(shape, seed):
 @pytest.mark.parametrize("shape", [(32, 128), (16, 64), (8, 256)])
 @pytest.mark.parametrize("seed", [42, 123, 456])
 def test_min(shape, seed):
+    """Test the min operation correctness and determinism"""
     torch.manual_seed(seed)
     x = torch.randn(shape, device='cuda')
     bit_min = bitexact.min(x, dim=-1)
@@ -46,12 +49,14 @@ def test_min(shape, seed):
 
 @pytest.mark.parametrize("batch_size,hidden_dim", [(32, 128), (16, 64), (8, 256)])
 def test_mean(batch_size, hidden_dim) -> None:
+    """Test the mean operation correctness and determinism"""
     x = torch.randn(batch_size, hidden_dim, device='cuda')
     bit_mean = bitexact.mean(x, dim=-1)
     torch_mean = torch.mean(x, dim=-1, keepdim=True)
     assert torch.allclose(bit_mean, torch_mean, rtol=1e-5, atol=1e-6)
 
 def test_rmsnorm() -> None:
+    """Test the mean operation correctness and determinism"""
     x = torch.randn(4, 8, device='cuda')
     w = torch.ones(8, device='cuda')
     y = bitexact.rms_norm(x, w)
@@ -78,6 +83,7 @@ def test_rmsnorm() -> None:
 @pytest.mark.parametrize("shape", [(32, 128), (16, 64), (8, 256)])
 @pytest.mark.parametrize("seed", [42, 123, 456, 789])
 def test_sum(shape, seed):
+    """Test the sum operation correctness and determinism"""
     torch.manual_seed(seed)
     x = torch.randn(shape, device='cuda')
     bit_sum = bitexact.sum(x, dim=-1)
@@ -91,6 +97,7 @@ def test_sum(shape, seed):
 @pytest.mark.parametrize("shape", [(32, 64), (4, 16, 128)])
 @pytest.mark.parametrize("eps", [1e-5, 1e-6])
 def test_layernorm_determinism(shape, eps):
+    """Test the layernorm operation correctness and determinism"""
     torch.manual_seed(42)
     x = torch.randn(shape, dtype=torch.float32, device="cuda")
 
@@ -111,6 +118,7 @@ def test_layernorm_determinism(shape, eps):
 @pytest.mark.parametrize("shape", [(32, 128), (16, 64)])
 @pytest.mark.parametrize("seed", [42, 123, 456])
 def test_var(shape, seed):
+    """Test the variance operation correctness and determinism"""
     torch.manual_seed(seed)
     x = torch.randn(shape, device='cuda')
     bit_var = bitexact.var(x, dim=-1)
@@ -121,6 +129,7 @@ def test_var(shape, seed):
 @pytest.mark.parametrize("shape", [(32, 64), (16, 128)])
 @pytest.mark.parametrize("dtype", [torch.float32])
 def test_sigmoid(shape, dtype):
+    """Test the sigmoid operation correctness and determinism"""
     x = torch.randn(shape, dtype=dtype, device='cuda')
     out = bitexact.sigmoid(x)
     ref = torch.sigmoid(x)
