@@ -8,7 +8,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='bitexact',
-    version='0.1.0',
+    version='0.1.1',
     author='Aarav Kohli',
     author_email='aaravkohli2008@gmail.com',
     description='Deterministic CUDA operations for reproducible deep learning',
