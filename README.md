@@ -109,7 +109,7 @@ To see how BitExact benchmarks on your machine, run:
 python benchmarks/benchmark.py
 ```
 
-Example Output
+Example output
 
 ```bash
 BitExact vs PyTorch - Benchmark Suite
@@ -135,6 +135,11 @@ All operations deterministic: True
 Average speedup: 1.46x
 =========================================================================
 ```
+
+> All measurements use CUDA events for precise GPU timing with 10 warmup and 100
+> timed iterations. Run-to-run variance of 5-15% is typical due to GPU boost clocks,
+> thermal state, and driver scheduling. Focus on relative speedup trends rather than
+> absolute millisecond values.
 
 # Testing
 
