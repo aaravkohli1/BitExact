@@ -82,18 +82,11 @@ pip install bitexact
 
 ## Troubleshooting
 
-**Error: "CUDA_HOME environment variable is not set"**
+_Working with CUDA is tricky, hopefully this tips help_
 
-- Make sure CUDA is installed and CUDA_HOME is set before running pip install
-
-**Error: "cannot find cl.exe"** (Windows)
-
-- Install Visual Studio Build Tools with C++ support
-- Use "Developer PowerShell for VS 2022" to run the installation
-
-**Build takes a long time**
-
-- This is normal - CUDA extensions compile during installation
+- CUDA_HOME environment variable is not set: make sure CUDA is installed and CUDA_HOME is set before running pip install
+- cannot find cl.exe: install Visual Studio Build Tools with C++ support (Use "Developer PowerShell for VS 2022" )
+- Build takes a long time: this is normal - CUDA extensions compile during installation
 
 # Performance at a Glance
 
