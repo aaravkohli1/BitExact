@@ -14,29 +14,29 @@
 
 ## 0. Why Determinism?
 
-Reproducibillity is essential for research and scientific progress. In modern machine learning, achieving reproducibillity is increasingly difficult due to inherent non-determinism in modern GPUs. Floating point arithmetic on GPUs is non-associative by nature, meaning that small changes in arithmetic order can lead to noticable output inconsistencies. These discrepancies compound in deep learning models, making it hard to verify whether differences in results arise from architecture changes, initialization, or simple numerical noise.
+Reproducibility is essential for research and scientific progress. In modern machine learning, achieving reproducibility is increasingly difficult due to inherent non-determinism in modern GPUs. Floating point arithmetic on GPUs is non-associative by nature, meaning that small changes in arithmetic order can lead to noticeable output inconsistencies. These discrepancies compound in deep learning models, making it hard to verify whether differences in results arise from architecture changes, initialization, or simple numerical noise.
 
-Determinism addresses this by enforcing fixed order arithmetic and reduction regardless of hardware, batchsize, devices, and drivers. By eliminating numerical invariance, researches can isolate effects of architectural or algorithmic changes, therefore enabling cleaner experiments, definitive ablation studies, and verifiable baselines.
+Determinism addresses this by enforcing fixed order arithmetic and reduction regardless of hardware, batchsize, devices, and drivers. By eliminating numerical variance, researchers can isolate effects of architectural or algorithmic changes, therefore enabling cleaner experiments, definitive ablation studies, and verifiable baselines.
 
-BitExact was developed for this exact purpose; to provide a library that enforces fixed order reduction and reproducible inference. If two runs use the same inputs, they will produce the bit identical outputs on BitExact's kernels. This principle turns determinism into a dependable scientific tool, rather than a convinient debugging model.
+BitExact was developed for this exact purpose; to provide a library that enforces fixed order reduction and reproducible inference. If two runs use the same inputs, they will produce the bit identical outputs on BitExact's kernels. This principle turns determinism into a dependable scientific tool, rather than a convenient debugging model.
 
 ## 1. Overview
 
-BitExact is a research driven CUDA library, focused on bit level reproducibillity in deep learning. It provides deterministic implementations of core tensor operations such as normalization, matrix multiplication, and reduction, ensuring that runs yield bit identical results across devices, architectures, drivers, and batches.
+BitExact is a research driven CUDA library, focused on bit level reproducibility in deep learning. It provides deterministic implementations of core tensor operations such as normalization, matrix multiplication, and reduction, ensuring that runs yield bit identical results across devices, architectures, drivers, and batches.
 
-The library is designed as a plug-and-play supplement to PyTorch, enabling developers and researches to make their models deterministic without modifying model architecture or code. Each kernel is implemented with fixed order arithmetic traversal order, warp-synchronous reductions, and strict rounding error control, thereby removing common sources of non-determinism commonly introduced by parallel reduction patterns and thread scheduling.
+The library is designed as a plug-and-play supplement to PyTorch, enabling developers and researchers to make their models deterministic without modifying model architecture or code. Each kernel is implemented with fixed order arithmetic traversal order, warp-synchronous reductions, and strict rounding error control, thereby removing common sources of non-determinism commonly introduced by parallel reduction patterns and thread scheduling.
 
-BitExact is not meant to be outperform highly optimized vendor kernels (like CuBLAS). It was solely developed to establish a deterministic computational baseline for model evaluation, reproducibility research, and numerical verification. While the development of BitExact was not inherently performance based, many optimizations have been made to the kernels to reduce memory operations use warp-synchronous reductions, and fuse common arithmetic stages, thereby offering competitive or superior performance on small to medium tensors in initial testing. These results were not the goal of the project but highlight that determinism and efficiency are not mutually exclusive when kernel design is carefully controlled.
+BitExact is not meant to be outperform highly optimized vendor kernels (like CuBLAS). It was primarily developed to establish a deterministic computational baseline for model evaluation, reproducibility research, and numerical verification. While the development of BitExact was not inherently performance based, many optimizations have been made to the kernels to reduce memory operations use warp-synchronous reductions, and fuse common arithmetic stages, thereby offering competitive or superior performance on small to medium tensors in initial testing. These results were not the goal of the project but highlight that determinism and efficiency are not mutually exclusive when kernel design is carefully controlled.
 
 In addition to this, BitExact is implemented in a modular architecture, allowing each kernel to be benchmarked, tested, and improved independently therefore making the library extensible for further kernel development.
 
 ## 2. Design Principles
 
-BitExact's architecture is guided by a few principles ensuring bit exact determinism without sacrificing maintainabillity or clarity.
+BitExact's architecture is guided by a few principles ensuring bit exact determinism without sacrificing maintainability or clarity.
 
 ### Fixed Order Arithmetic
 
-All reductions and accumulations are implemented using fixed order traversals, therefore ensuring determinism across runs, threads, and blocks. This eliminates nondeterminism introduced by thread scheduling, warp-level divergence, or floating-point non-associativity. This is highlighted more in the individual kernel sections.
+All reductions and accumulations are implemented using fixed order traversals, therefore ensuring determinism across runs, threads, and blocks. This eliminates nondeterminism introduced by thread scheduling, warp-level divergence, or floating-point non-associativity. This is detailed further in the individual kernel sections.
 
 ### Warp-Synchronous Reductions
 
@@ -89,7 +89,7 @@ You are not feel limited to the current sub folders that exist within `src/ops`,
 
 Reduction operations are some of the most common sources of nondeterminism in GPU computation. Traditional GPU reductions rely on atomic operations, or thread-level accumulation patterns that vary in execution between runs. This occurs due to timing invariance on a run-to-run basis. In addition, floating point arithmetic in GPUs is inherently non-associative. This is to say $(a + b) + c \neq a + (b + c)$. This makes fixed order reduction and accumulation order essential for determinsitic GPU kernels.
 
-BitExact addresses this performing warp-synchronous, and tree style reductions across its kernels, where the order of pairwise summations is explicitly defined and identical on a run-to-run basis. This pattern eliminates race conditions and ensures reproducible patial sums in arithmetic accumulation. (See Figure 1)
+BitExact addresses this performing warp-synchronous, and tree style reductions across its kernels, where the order of pairwise summations is explicitly defined and identical on a run-to-run basis. This pattern eliminates race conditions and ensures reproducible partial sums in arithmetic accumulation. (See Figure 1)
 
 Each reduction kernel is further optimized to minimize global memory operations and shared-memory usage, enabling both deterministic and efficient computation. Together, these methods guarantee that BitExact’s reduction outputs remain identical across runs, devices, and driver versions
 
@@ -112,7 +112,7 @@ This guarantees reproducibility across executions and hardware configurations.
 In a single fused pass:
 
 - Each thread block handles one batch element
-- The mean and variance are brodcast from the reduction stage
+- The mean and variance are broadcast from the reduction stage
 - A precomputed inverse standard deviation deterministically scales inputs
 
 **Vectorized Memory Access**
@@ -136,7 +136,7 @@ Each CUDA block computes a 32x32 tile of the output. The tiling strategy is stat
 
 **Thread Work Assignment**
 
-Each thread is assigned a 2x2 output sub-tile. Thread indices `(tx, ty)` are derived deteministically from `threadIdx.x` forming a 16x16 layout per block.
+Each thread is assigned a 2x2 output sub-tile. Thread indices `(tx, ty)` are derived deterministically from `threadIdx.x` forming a 16x16 layout per block.
 
 \*\*Shared Memory Tiles
 
@@ -182,7 +182,7 @@ While BitExact achieves competitive output on small tensors in preliminary testi
 
 ## 10. Future Work
 
-BitExact currently implements deterministic forward kernels for normalization, reduction, activation, and matrix multiplication. These operations provide a strong foundation in reproducible inference, but there are several areas that cold be expanded if the idea continues to evolve.
+BitExact currently implements deterministic forward kernels for normalization, reduction, activation, and matrix multiplication. These operations provide a strong foundation in reproducible inference, but there are several areas that could be expanded if the idea continues to evolve.
 
 ### Deterministic Backward Passes
 

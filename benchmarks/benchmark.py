@@ -91,10 +91,24 @@ if __name__ == "__main__":
     print("\n" + header)
     print("-" * len(header))
 
+    # Color codes
+    green = "\033[92m"
+    red = "\033[91m"
+    reset = "\033[0m"
+
     for row in results:
-        color = "\033[92m" if row[5] else "\033[91m"
-        reset = "\033[0m"
+        color = green if row[5] else red
         match_str = f"{color}{str(row[5]):>8}{reset}"
         print(f"{row[0]:<12} {row[1]:>12} {row[2]:>14} {row[3]:>10} {row[4]:>12} {match_str}")
 
+    all_det = all(r[5] for r in results)
+    average_speedup = round(sum(float(r[3][:-1]) for r in results) / len(results), 2)
+
     print("\nNote: Matches use atol=1e-4, rtol=1e-6 tolerance (within FP32 rounding).")
+    print("-" * len(header))
+    print("Summary")
+    print("-" * len(header))
+    print(f"Operations faster than PyTorch: {sum(1 for r in results if float(r[3][:-1]) > 1.0)}/{len(results)}")
+    print(f"All operations deterministic: {green if all_det else red}{all_det}{reset}")
+    print(f"Average speedup: {green if average_speedup >= 1 else red}{average_speedup}x{reset}")
+    print('=' * len(header))

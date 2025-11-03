@@ -116,15 +116,24 @@ BitExact vs PyTorch - Benchmark Suite
 
 Operation      Torch (ms)  BitExact (ms)      Speed     Max Diff    Match
 -------------------------------------------------------------------------
-MatMul             0.0290         0.0614      0.47x     9.92e-05     True
-Sum                0.0083         0.0081      1.02x     1.14e-05     True
-Mean               0.0086         0.0082      1.06x     1.12e-08     True
-Max                0.0086         0.0076      1.13x     0.00e+00     True
-Min                0.0089         0.0076      1.16x     0.00e+00     True
-Sigmoid            0.0073         0.0074      0.98x     0.00e+00     True
-RMSNorm            0.0433         0.0084      5.13x     1.91e-06     True
-LayerNorm          0.0813         0.0504      1.61x     2.38e-06     True
-Variance           0.0323         0.0219      1.47x     2.38e-07     True
+MatMul             0.0336         0.0692      0.48x     1.07e-04     True
+Sum                0.0086         0.0117      0.73x     1.14e-05     True
+Mean               0.0083         0.0079      1.05x     1.12e-08     True
+Max                0.0087         0.0117      0.74x     0.00e+00     True
+Min                0.0097         0.0080      1.21x     0.00e+00     True
+Sigmoid            0.0074         0.0073      1.01x     0.00e+00     True
+RMSNorm            0.0430         0.0084      5.12x     1.91e-06     True
+LayerNorm          0.0881         0.0547      1.61x     1.91e-06     True
+Variance           0.0311         0.0266      1.17x     2.38e-07     True
+
+Note: Matches use atol=1e-4, rtol=1e-6 tolerance (within FP32 rounding).
+-------------------------------------------------------------------------
+Summary
+-------------------------------------------------------------------------
+Operations faster than PyTorch: 6/9
+All operations deterministic: True
+Average speedup: 1.46x
+=========================================================================
 ```
 
 # Testing
@@ -262,9 +271,9 @@ Please ensure new kernels:
 
 # Project Status
 
-This was my first time writing CUDA kernels, and sort of a quick three day experiment to understand deterministic GPU computation. BitExact works reliably for all implemented operations, but it’s mostly a one-off research project rather than an actively maintained library.
+This project was an experiment that followed a research article. I found it to be an interesting problem, so I spent a portion of my reading week making this library. I do find the problem of determinism to be really interesting so I will keep developing this library, but on no fixed schedule.
 
-There are many ways the library could be expanded, outlined in the [design document](./docs/design.md), which I may work on in the future.
+There are many ways the library could be expanded, outlined in the [design document](./docs/design.md). If you are interested, feel free to make a contribution.
 
 ### Acknowledgements
 
