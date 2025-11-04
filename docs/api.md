@@ -359,4 +359,4 @@ bit_sigmoid = bxt.sigmoid(x)
 
 BitExact is built on top of PyTorch, whose functions are not documented in this repository. For more information, visit the [official PyTorch website](https://pytorch.org)
 
-To see what makes these kernels determinsistic and why its important, check out the [design reference](./design.md). To see performance metrics on the kernels, check out the [performance docs](./performance.md). Finally, for determinism guarantees check out the [testing docs](./testing.md).
+To see what makes these kernels determinsistic and why its important, check out the [design reference](./design.md).
